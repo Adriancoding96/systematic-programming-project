@@ -5,5 +5,5 @@ import com.adrain.llm_middleware.record.auth.SignupRequest;
 
 public interface UserService {
   User getUserByEmail(String email);
-  void signUp(SignupRequest signupRequest);
+  void signup(SignupRequest signupRequest);
 }
