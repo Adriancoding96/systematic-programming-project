@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
+import com.adrain.llm_middleware.enums.ResponseRating;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +34,6 @@ public class Response {
   private String responseBody;
 
   private List<String> metaData;
+
+  private ResponseRating rating;
 }
