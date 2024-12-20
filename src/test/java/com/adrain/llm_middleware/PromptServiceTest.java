@@ -53,4 +53,25 @@ public class PromptServiceTest {
     verify(openAiClient).getCompletion(prompt);
     assertNotNull(response);
   }
+
+  /*
+   * Test checks that openai api response contains a choice contiaining text
+   * */
+  @Test
+  void assertPromptResponseContainsChoiceWithText() {
+    String prompt = "How do i center a div in html";
+
+    OpenAiResponse mockResponse = new OpenAiResponse(
+      "test-id",
+      "test-model",
+      List.of(new OpenAiResponse.Choice("You use css LOL", 0, "stop")),
+      new OpenAiResponse.Usage(5, 5, 10)
+    );
+
+    when(openAiClient.getCompletion(prompt)).thenReturn(Mono.just(mockResponse));
+  
+    OpenAiResponse response = promptServiceImpl.getResponse(prompt);
+    String text = response.choices().getFirst().text();
+    assertNotNull(text);
+  }
 }
