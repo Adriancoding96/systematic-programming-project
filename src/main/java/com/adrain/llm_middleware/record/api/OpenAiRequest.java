@@ -5,5 +5,4 @@ public record OpenAiRequest(
   String prompt,
   Integer max_tokens,
   Double temprature
-
 ) {}

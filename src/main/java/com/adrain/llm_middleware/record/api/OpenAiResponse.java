@@ -2,6 +2,7 @@ package com.adrain.llm_middleware.record.api;
 
 import java.util.List;
 
+
 public record OpenAiResponse(
   String id,
   String model,
