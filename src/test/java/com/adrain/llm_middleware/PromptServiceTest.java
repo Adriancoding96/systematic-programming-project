@@ -1,5 +1,10 @@
 package com.adrain.llm_middleware;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import com.adrain.llm_middleware.api.OpenAiClient;
@@ -11,6 +16,8 @@ import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import reactor.core.publisher.Mono;
 
 public class PromptServiceTest {
 
@@ -25,6 +32,10 @@ public class PromptServiceTest {
     promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient);
   }
 
+  /*
+   * Test evaluates that OpenAiClient returns expected result of a Mono containing a value
+   * in PromptService
+   * */
   @Test
   void givenPromptReturnsApiResponse() {
     String prompt = "How do i center a div in html";
@@ -35,5 +46,13 @@ public class PromptServiceTest {
       List.of(new OpenAiResponse.Choice("You use css LOL", 0, "stop")),
       new OpenAiResponse.Usage(5, 5, 10)
     );
+
+    when(openAiClient.getCompletion(prompt)).thenReturn(Mono.just(mockResponse));
+  
+    String response = promptServiceImpl.getResponse(prompt).block(); 
+
+    verify(openAiClient).getCompletion(prompt);
+    assertNotNull(response);
+    assertTrue(response.contains("You use css LOL"));
   }
 }
