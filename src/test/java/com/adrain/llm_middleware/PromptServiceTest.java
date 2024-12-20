@@ -1,7 +1,6 @@
 package com.adrain.llm_middleware;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,10 +48,30 @@ public class PromptServiceTest {
 
     when(openAiClient.getCompletion(prompt)).thenReturn(Mono.just(mockResponse));
   
-    String response = promptServiceImpl.getResponse(prompt).block(); 
+    OpenAiResponse response = promptServiceImpl.getResponse(prompt); 
 
     verify(openAiClient).getCompletion(prompt);
     assertNotNull(response);
-    assertTrue(response.contains("You use css LOL"));
+  }
+
+  /*
+   * Test checks that openai api response contains a choice contiaining text
+   * */
+  @Test
+  void assertPromptResponseContainsChoiceWithText() {
+    String prompt = "How do i center a div in html";
+
+    OpenAiResponse mockResponse = new OpenAiResponse(
+      "test-id",
+      "test-model",
+      List.of(new OpenAiResponse.Choice("You use css LOL", 0, "stop")),
+      new OpenAiResponse.Usage(5, 5, 10)
+    );
+
+    when(openAiClient.getCompletion(prompt)).thenReturn(Mono.just(mockResponse));
+  
+    OpenAiResponse response = promptServiceImpl.getResponse(prompt);
+    String text = response.choices().getFirst().text();
+    assertNotNull(text);
   }
 }
