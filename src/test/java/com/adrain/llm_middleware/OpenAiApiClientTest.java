@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class PromptServiceTest {
+public class OpenAiApiClientTest {
 
   private PromptRepository promptRepository;
   private OpenAiClient openAiClient;
