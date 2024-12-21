@@ -15,9 +15,11 @@ import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import reactor.core.publisher.Mono;
 
+@SpringBootTest
 public class PromptServiceTest {
 
   private PromptRepository promptRepository;
