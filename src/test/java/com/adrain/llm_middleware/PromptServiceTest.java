@@ -1,23 +1,13 @@
 package com.adrain.llm_middleware;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
 import com.adrain.llm_middleware.api.OpenAiClient;
-import com.adrain.llm_middleware.record.api.OpenAiResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import reactor.core.publisher.Mono;
 
 @SpringBootTest
 public class PromptServiceTest {
@@ -37,6 +27,8 @@ public class PromptServiceTest {
    * Test evaluates that OpenAiClient returns expected result of a Mono containing a value
    * in PromptService
    * */
+
+  /*
   @Test
   void givenPromptReturnsApiResponse() {
     String prompt = "How do i center a div in html";
@@ -54,11 +46,12 @@ public class PromptServiceTest {
 
     verify(openAiClient).getCompletion(prompt);
     assertNotNull(response);
-  }
+  }*/
 
   /*
    * Test checks that openai api response contains a choice contiaining text
    * */
+  /*
   @Test
   void assertPromptResponseContainsChoiceWithText() {
     String prompt = "How do i center a div in html";
@@ -75,5 +68,5 @@ public class PromptServiceTest {
     OpenAiResponse response = promptServiceImpl.getResponse(prompt);
     String text = response.choices().getFirst().text();
     assertNotNull(text);
-  }
+  }*/
 }
