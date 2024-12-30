@@ -1,9 +1,10 @@
 package com.adrain.llm_middleware.service;
 
-import com.adrain.llm_middleware.record.api.OpenAiResponse;
+import com.adrain.llm_middleware.record.Prompt.PromptRequest;
+import com.adrain.llm_middleware.record.Prompt.PromptResponse;
 
 public interface PromptService {
 
-  OpenAiResponse getResponse(String prompt);
+  PromptResponse newPrompt(PromptRequest request);
   
 }

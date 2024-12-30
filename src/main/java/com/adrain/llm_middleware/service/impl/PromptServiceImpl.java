@@ -1,6 +1,8 @@
 package com.adrain.llm_middleware.service.impl;
 
 import com.adrain.llm_middleware.api.OpenAiClient;
+import com.adrain.llm_middleware.record.Prompt.PromptRequest;
+import com.adrain.llm_middleware.record.Prompt.PromptResponse;
 import com.adrain.llm_middleware.record.api.OpenAiResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
@@ -22,8 +24,25 @@ public class PromptServiceImpl implements PromptService {
     this.openAiClient = openAiClient;
   }
 
+  /*
+   * Method extracts response from llm api and returns it to PromptController
+   *
+   * @param request: record that contains prompt text
+   * @return response: returns record that contains response text
+   * */
   @Override
-  public OpenAiResponse getResponse(String prompt) {
+  public PromptResponse newPrompt(PromptRequest request) {
+    OpenAiResponse fullResponse = getResponse(request.prompt());
+    return new PromptResponse(fullResponse.choices().get(0).text());
+  }
+
+  /*
+   * Method calls opanai api client which returns a response if successfull
+   *
+   * @param prompt: contains prompt from user
+   * @return response: contains responses from openai api and meta data
+   * */
+  private OpenAiResponse getResponse(String prompt) {
     Mono<OpenAiResponse> monoResponse = openAiClient.getCompletion(prompt);
     return monoResponse.block();
   }
