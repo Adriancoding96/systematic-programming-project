@@ -6,7 +6,6 @@ import java.util.List;
 public record ChatCompletionRequest(
   String model,
   List<Message> messages,
-  Integer maxTokens,
-  Double temprature
-  
+  Integer max_tokens,
+  Double temperature
 ) {}
