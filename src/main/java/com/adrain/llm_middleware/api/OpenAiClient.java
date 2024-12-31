@@ -1,6 +1,9 @@
 package com.adrain.llm_middleware.api;
 
-import com.adrain.llm_middleware.record.api.OpenAiRequest;
+import java.util.List;
+
+import com.adrain.llm_middleware.record.api.ChatCompletionRequest;
+import com.adrain.llm_middleware.record.api.Message;
 import com.adrain.llm_middleware.record.api.OpenAiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +45,16 @@ public class OpenAiClient {
    * */
   
   public Mono<OpenAiResponse> getCompletion(final String prompt) {
-    final OpenAiRequest request = new OpenAiRequest("text-davinci-003", prompt, 100, 0.7);
+    List<Message> messages = List.of(new Message("user", prompt));
+    ChatCompletionRequest request = new ChatCompletionRequest(
+      "gpt-3.5-turbo",
+      messages,
+      100,
+      0.7
+    );
+
     return webClient.post()
-      .uri("/completions")
+      .uri("/chat/completions")
       .bodyValue(request)
       .retrieve()
       .onStatus(
