@@ -33,7 +33,8 @@ public class PromptServiceImpl implements PromptService {
   @Override
   public PromptResponse newPrompt(PromptRequest request) {
     OpenAiResponse fullResponse = getResponse(request.prompt());
-    return new PromptResponse(fullResponse.choices().get(0).text());
+    return new PromptResponse(fullResponse.choices().get(0).message().toString());
+     
   }
 
   /*

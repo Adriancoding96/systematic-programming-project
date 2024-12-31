@@ -2,23 +2,27 @@ package com.adrain.llm_middleware.record.api;
 
 import java.util.List;
 
-
 public record OpenAiResponse(
-  String id,
-  String model,
-  List<Choice> choices,
-  Usage usage
+    String id,
+    String object,
+    Long created,
+    List<Choice> choices,
+    Usage usage
 ) {
-  
-  public record Choice(
-    String text,
-    Integer index,
-    String finish_reason
-  ) {}
+    public record Choice(
+        int index,
+        Message message,
+        String finish_reason
+    ) {}
 
-  public record Usage(
-    int prompt_tokens,
-    int completion_tokens,
-    int total_tokens
-  ) {}
+    public record Message(
+        String role,
+        String content
+    ) {}
+
+    public record Usage(
+        int prompt_tokens,
+        int completion_tokens,
+        int total_tokens
+    ) {}
 }

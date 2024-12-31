@@ -1,6 +1,9 @@
 package com.adrain.llm_middleware.api;
 
-import com.adrain.llm_middleware.record.api.OpenAiRequest;
+import java.util.List;
+
+import com.adrain.llm_middleware.record.api.ChatCompletionRequest;
+import com.adrain.llm_middleware.record.api.Message;
 import com.adrain.llm_middleware.record.api.OpenAiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,7 @@ public class OpenAiClient {
    * @param apiKey: api key for openai from enviroment variable
    * */
   @Autowired
-  public OpenAiClient(@Value("${api.key}") String apiKey) {
+  public OpenAiClient(@Value("${api.key}") final String apiKey) {
     this.webClient = WebClient.builder()
       .baseUrl("https://api.openai.com/v1")
       .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
@@ -40,13 +43,28 @@ public class OpenAiClient {
    * @return Mono<OpenApiResponse>: If successfull returns a OpenApiResponse, otherwise returns a empty mono
    *
    * */
-  public Mono<OpenAiResponse> getCompletion(String prompt) {
-    OpenAiRequest request = new OpenAiRequest("text-davinci-003", prompt, 100, 0.7);
+  
+  public Mono<OpenAiResponse> getCompletion(final String prompt) {
+    List<Message> messages = List.of(new Message("user", prompt));
+    ChatCompletionRequest request = new ChatCompletionRequest(
+      "gpt-3.5-turbo",
+      messages,
+      100,
+      0.7
+    );
 
     return webClient.post()
-      .uri("/completions")
+      .uri("/chat/completions")
       .bodyValue(request)
       .retrieve()
+      .onStatus(
+        status -> status.is4xxClientError() || status.is5xxServerError(),
+        clientResponse ->
+          clientResponse.bodyToMono(String.class)
+            .flatMap(errorBody -> {
+              return Mono.error(new RuntimeException("OpenAi returned error: " + errorBody));
+            })
+      )
       .bodyToMono(OpenAiResponse.class);
   }
   
