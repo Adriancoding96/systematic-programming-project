@@ -24,7 +24,7 @@ public class OpenAiClient {
    * @param apiKey: api key for openai from enviroment variable
    * */
   @Autowired
-  public OpenAiClient(@Value("${api.key}") String apiKey) {
+  public OpenAiClient(@Value("${api.key}") final String apiKey) {
     this.webClient = WebClient.builder()
       .baseUrl("https://api.openai.com/v1")
       .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
@@ -40,13 +40,21 @@ public class OpenAiClient {
    * @return Mono<OpenApiResponse>: If successfull returns a OpenApiResponse, otherwise returns a empty mono
    *
    * */
-  public Mono<OpenAiResponse> getCompletion(String prompt) {
-    OpenAiRequest request = new OpenAiRequest("text-davinci-003", prompt, 100, 0.7);
-
+  
+  public Mono<OpenAiResponse> getCompletion(final String prompt) {
+    final OpenAiRequest request = new OpenAiRequest("text-davinci-003", prompt, 100, 0.7);
     return webClient.post()
       .uri("/completions")
       .bodyValue(request)
       .retrieve()
+      .onStatus(
+        status -> status.is4xxClientError() || status.is5xxServerError(),
+        clientResponse ->
+          clientResponse.bodyToMono(String.class)
+            .flatMap(errorBody -> {
+              return Mono.error(new RuntimeException("OpenAi returned error: " + errorBody));
+            })
+      )
       .bodyToMono(OpenAiResponse.class);
   }
   
