@@ -144,14 +144,14 @@ public class KeywordSearcher {
 
   private final AhoCorasickTrie ahoCorasickTrie;
 
-  private KeywordSearcher() {
-    this.ahoCorasickTrie = new AhoCorasickTrie();
+  private KeywordSearcher(AhoCorasickTrie ahoCorasickTrie) {
+    this.ahoCorasickTrie = ahoCorasickTrie;
     this.ahoCorasickTrie.insertAll(KEYWORDS);
   }
 
-  public static KeywordSearcher getInstance() {
+  public static KeywordSearcher getInstance(AhoCorasickTrie ahoCorasickTrie) {
     if(instance == null) {
-      instance = new KeywordSearcher();
+      instance = new KeywordSearcher(ahoCorasickTrie);
     }
     return instance;
   }
