@@ -57,6 +57,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
         .requestMatchers(HttpMethod.GET, "/authentication-docs/**").permitAll()
+        .requestMatchers(HttpMethod.GET, "/test/**").permitAll()
         .anyRequest().authenticated())
         .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
         .authenticationManager(authenticationManager)
