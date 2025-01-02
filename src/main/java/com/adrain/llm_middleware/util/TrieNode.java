@@ -1,20 +1,26 @@
 package com.adrain.llm_middleware.util;
 
-import java.util.HashMap;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class TrieNode {
 
-  private HashMap<Character, TrieNode> children;
+  TrieNode[] children;
   private String content;
-  private boolean endOfWord;
+  private boolean isEndOfWord;
+
+  public TrieNode() {
+    this.children = new TrieNode[128];
+    this.content = "";
+    this.isEndOfWord = false;
+  }
+
+  public TrieNode(String content) {
+    this.children = new TrieNode[128];
+    this.content = content;
+    this.isEndOfWord = false;
+  }
   
 }
