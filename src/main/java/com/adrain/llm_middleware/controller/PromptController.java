@@ -1,7 +1,7 @@
 package com.adrain.llm_middleware.controller;
 
-import com.adrain.llm_middleware.record.Prompt.PromptRequest;
-import com.adrain.llm_middleware.record.Prompt.PromptResponse;
+import com.adrain.llm_middleware.record.prompt.PromptRequest;
+import com.adrain.llm_middleware.record.prompt.PromptResponse;
 import com.adrain.llm_middleware.service.PromptService;
 
 import org.springframework.beans.factory.annotation.Autowired;
