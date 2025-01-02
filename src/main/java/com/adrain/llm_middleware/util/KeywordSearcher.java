@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class KeywordSearcher {
 
+  private static KeywordSearcher instance;
+
   private final List<String> KEYWORDS = List.of(
       "java",
       "rust",
@@ -139,4 +141,22 @@ public class KeywordSearcher {
       "firebase",
       "cloud run",
       "e3");
+
+  private final AhoCorasickTrie ahoCorasickTrie;
+
+  private KeywordSearcher() {
+    this.ahoCorasickTrie = new AhoCorasickTrie();
+    this.ahoCorasickTrie.insertAll(KEYWORDS);
+  }
+
+  public static KeywordSearcher getInstance() {
+    if(instance == null) {
+      instance = new KeywordSearcher();
+    }
+    return instance;
+  }
+
+  public List<String> getKeywords(String text) {
+    return this.ahoCorasickTrie.searchText(text);
+  }
 }
