@@ -2,6 +2,7 @@ package com.adrain.llm_middleware.util;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -144,6 +145,7 @@ public class KeywordSearcher {
 
   private final AhoCorasickTrie ahoCorasickTrie;
 
+  @Autowired
   private KeywordSearcher() {
     this.ahoCorasickTrie = new AhoCorasickTrie();
     this.ahoCorasickTrie.insertAll(KEYWORDS);
