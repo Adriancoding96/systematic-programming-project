@@ -24,5 +24,4 @@ public class AhoCorasickNode extends TrieNode {
     this.failureLink = null;
     this.output = new ArrayList<>();
   }
-  
 }
