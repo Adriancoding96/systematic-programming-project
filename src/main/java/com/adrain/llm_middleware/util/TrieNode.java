@@ -15,6 +15,6 @@ public class TrieNode {
 
   private HashMap<Character, TrieNode> children;
   private String content;
-  private boolean isWord;
+  private boolean endOfWord;
   
 }
