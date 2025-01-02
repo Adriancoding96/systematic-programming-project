@@ -18,6 +18,13 @@ public class AhoCorasickTrie extends Trie {
   }
 
   @Override
+  public void insertAll(List<String> words) {
+    for(String word : words) {
+      insert(word);
+    }
+  }
+
+  @Override
   public void insert(String word) {
     AhoCorasickNode current = (AhoCorasickNode) getRoot();
 
