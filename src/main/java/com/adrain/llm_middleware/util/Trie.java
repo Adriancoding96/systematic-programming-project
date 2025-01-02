@@ -1,5 +1,7 @@
 package com.adrain.llm_middleware.util;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +13,12 @@ public class Trie {
 
   public Trie() {
     root = new TrieNode();
+  }
+
+  public void insertAll(List<String> words) {
+    for(String word : words) {
+      insert(word);
+    }
   }
 
   public void insert(String word) {
