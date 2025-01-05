@@ -1,30 +1,32 @@
 package com.adrain.llm_middleware.controller;
 
+
 import java.util.List;
 
-import com.adrain.llm_middleware.util.KeywordSearcher;
+import com.adrain.llm_middleware.util.AhoCorasickTrie;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/test")
 public class TestController {
 
-  private final KeywordSearcher keywordSearcher;
+  private final AhoCorasickTrie ahoCorasickTrie;
 
-  @Autowired
-  public TestController(KeywordSearcher keywordSearcher) {
-    this.keywordSearcher = keywordSearcher;
+  public TestController() {
+    this.ahoCorasickTrie = new AhoCorasickTrie();
+    this.ahoCorasickTrie.insert("adrian");
+    this.ahoCorasickTrie.insert("java");
+    this.ahoCorasickTrie.buildFailureLinks();
   }
 
-  @GetMapping("/keywords")
-  public ResponseEntity<List<String>> testKeywordSearcher(@RequestParam("text") String text) {
-    return ResponseEntity.ok(null);
+  @PostMapping("/search")
+  public ResponseEntity<List<String>> searchPatterns(@RequestBody String text) {
+    List<String> matches = ahoCorasickTrie.searchText(text);
+    return ResponseEntity.ok(matches);
   }
-
 }
