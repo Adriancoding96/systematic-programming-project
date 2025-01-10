@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/prompt")
+@RequestMapping("/api/prompt")
 public class PromptController {
 
   private final PromptService promptService;
