@@ -1,11 +1,13 @@
 package com.adrain.llm_middleware.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.adrain.llm_middleware.mapper.ResponseMapper;
 import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.record.response.ResponseRecord;
 import com.adrain.llm_middleware.repository.ResponseRepository;
+import com.adrain.llm_middleware.security.AuthenticationFacade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,13 @@ public class ResponseServiceImpl {
 
   private final ResponseRepository repository;
   private final ResponseMapper mapper;
-
+  private final AuthenticationFacade authenticationFacade;
 
   @Autowired
-  public ResponseServiceImpl(ResponseRepository repository, ResponseMapper mapper) {
+  public ResponseServiceImpl(ResponseRepository repository, ResponseMapper mapper, AuthenticationFacade authenticationFacade) {
     this.repository = repository;
     this.mapper = mapper;
+    this.authenticationFacade = authenticationFacade;
   }
 
   /*
@@ -33,9 +36,18 @@ public class ResponseServiceImpl {
     repository.save(mapper.toResponse(record));
   }
 
-  //TODO implement authorization web context before implementing this method.
+  /*
+   * Fetches all responses by user email. Email is provided
+   * through api authentication context.
+   *
+   * @return responseRecords: contains records coneverted from responses
+   * */
   List<ResponseRecord> getAllResponsesByUserId() {
-    return null;
+    String email = authenticationFacade.getAuthentication().getName();
+    List<Response> responses = repository.findAllByUserEmail(email); 
+    return responses.stream()
+      .map(mapper::toRecord)
+      .collect(Collectors.toList());
   }
 
 

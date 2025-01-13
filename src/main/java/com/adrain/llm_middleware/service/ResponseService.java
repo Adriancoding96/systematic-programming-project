@@ -6,7 +6,7 @@ import com.adrain.llm_middleware.record.response.ResponseRecord;
 
 public interface ResponseService {
   void newResponse(ResponseRecord record);
-  List<ResponseRecord> getAllResponsesByUserId();
+  List<ResponseRecord> getAllResponsesByUserEmail();
   ResponseRecord getResponseById(Long id);
   void deleteResponseById(Long id);
 }

@@ -34,7 +34,7 @@ public class ResponseController {
   @GetMapping
   ResponseEntity<List<ResponseRecord>> getAllResponsesByUserId() {
     //Authorization will be handled in service using webcontext so no need to pass user details
-    List<ResponseRecord> responses = service.getAllResponsesByUserId();
+    List<ResponseRecord> responses = service.getAllResponsesByUserEmail();
     return ResponseEntity.ok(responses);
   }
 
