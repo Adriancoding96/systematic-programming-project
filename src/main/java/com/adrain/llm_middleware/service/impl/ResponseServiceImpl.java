@@ -3,6 +3,7 @@ package com.adrain.llm_middleware.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.adrain.llm_middleware.exception.ResponseNotFoundException;
 import com.adrain.llm_middleware.mapper.ResponseMapper;
 import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.record.response.ResponseRecord;
@@ -61,7 +62,7 @@ public class ResponseServiceImpl {
    * */
   ResponseRecord getResponseById(Long id) {
     Response response = repository.findById(id).
-      orElseThrow(() -> new RuntimeException("Could not find response in database with id: " + id));
+      orElseThrow(() -> new ResponseNotFoundException("Could not find response in database with id: " + id));
     return mapper.toRecord(response); 
   }
 
