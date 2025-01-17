@@ -15,17 +15,26 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * OpenAiClient is a service class that interacts with the OpenAI API to retrieve
+ * chat completions based on a provided prompt.
+ * <p>
+ *     This class uses Spring's {@link WebClient} to send HTTP POST requests
+ *     to the OpenAI API. The API key is injected through the {@code api.key}
+ *     property, and headers are set for authorization and content type.
+ * </p>
+ */
 @Service
 public class OpenAiClient {
 
   private final WebClient webClient;
 
-  /*
-   * Constructor creates a new WebClient with api endpoint, authorization header,
-   * and content type header
+
+  /**
+   * Constructs an {@link OpenAiClient} instance with the specified API key.
    *
-   * @param apiKey: api key for openai from enviroment variable
-   * */
+   * @param apiKey The API key used for authenticating requests to the OpenAI API.
+   */
   @Autowired
   public OpenAiClient(@Value("${api.key}") final String apiKey) {
     this.webClient = WebClient.builder()
@@ -35,15 +44,17 @@ public class OpenAiClient {
       .build();
   }
 
-  /*
-   * Method sends request to openai api containing prompt then returns a Mono<OpenApiResponse>
-   * Mono can either be a single value or empty, it is used to handle mutiple request asynchrounously
+  /**
+   * Sends a prompt to the OpenAI Chat Completion endpoint and retrieves the result.
+   * <p>
+   *     Creates a {@link ChatCompletionRequest} with the specified parameters
+   *     and handles potential errors by returning a {@link Mono} that may emit
+   *     an error if the API responds with a non-2xx status code.
+   * </p>
    *
-   * @param prompt: Contains prompt to be sent to api
-   * @return Mono<OpenApiResponse>: If successfull returns a OpenApiResponse, otherwise returns a empty mono
-   *
-   * */
-  
+   * @param prompt The prompt text to be processed by OpenAI.
+   * @return A {@link Mono} emitting the {@link OpenAiResponse} containing the completion.
+   */
   public Mono<OpenAiResponse> getCompletion(final String prompt) {
     List<Message> messages = List.of(new Message("user", prompt));
     ChatCompletionRequest request = new ChatCompletionRequest(

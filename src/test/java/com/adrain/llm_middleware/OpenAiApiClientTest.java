@@ -4,6 +4,7 @@ import com.adrain.llm_middleware.api.OpenAiClient;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
+import com.adrain.llm_middleware.util.KeywordSearcher;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
@@ -14,13 +15,14 @@ public class OpenAiApiClientTest {
 
   private PromptRepository promptRepository;
   private OpenAiClient openAiClient;
+  private KeywordSearcher keywordSearcher;
   private PromptService promptServiceImpl;
 
   @BeforeEach
   void setUp() {
     promptRepository = Mockito.mock(PromptRepository.class);
     openAiClient = Mockito.mock(OpenAiClient.class);
-    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient);
+    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient, keywordSearcher);
   }
 
   /*
