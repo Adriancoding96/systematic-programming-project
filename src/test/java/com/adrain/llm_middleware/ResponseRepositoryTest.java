@@ -9,7 +9,9 @@ import java.util.Optional;
 
 import com.adrain.llm_middleware.enums.ResponseRating;
 import com.adrain.llm_middleware.model.Response;
+import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.repository.ResponseRepository;
+import com.adrain.llm_middleware.repository.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class ResponseRepositoryTest {
 
     @Autowired
     private ResponseRepository responseRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     public void testFindById() {
@@ -41,22 +46,52 @@ public class ResponseRepositoryTest {
 
     @Test
     public void findAll() {
-        Response r1 = new Response();
-        r1.setResponseBody("Response 1");
-        r1.setMetaData(List.of("tag1", "tag2"));
-        r1.setRating(ResponseRating.VERY_USEFUL);
+      Response response1 = new Response();
+      response1.setResponseBody("Response 1");
+      response1.setMetaData(List.of("java", "rust"));
+      response1.setRating(ResponseRating.VERY_USEFUL);
 
-        Response r2 = new Response();
-        r2.setResponseBody("Response 2");
-        r2.setMetaData(List.of("tag3"));
-        r2.setRating(ResponseRating.SLIGHTLY_USEFUL);
+      Response response2 = new Response();
+      response2.setResponseBody("Response 2");
+      response2.setMetaData(List.of("zig"));
+      response2.setRating(ResponseRating.SLIGHTLY_USEFUL);
 
-        responseRepository.save(r1);
-        responseRepository.save(r2);
+      responseRepository.save(response1);
+      responseRepository.save(response2);
 
-        List<Response> responses = responseRepository.findAll();
-        assertThat(responses).hasSize(2);
+      List<Response> responses = responseRepository.findAll();
+      assertThat(responses).hasSize(2);
     }
+
+    @Test
+    public void findAllByUserEmail() {
+      User user = new User();
+      user.setName("Adrian");
+      user.setEmail("adrian@example.com");
+      user.setPassword("verysecurepassword123");
+
+      userRepository.save(user);
+    
+      Response response1 = new Response();
+      response1.setResponseBody("Response 1");
+      response1.setMetaData(List.of("java", "rust"));
+      response1.setRating(ResponseRating.VERY_USEFUL);
+      response1.setUser(user);
+
+      Response response2 = new Response();
+      response2.setResponseBody("Response 2");
+      response2.setMetaData(List.of("zig"));
+      response2.setRating(ResponseRating.SLIGHTLY_USEFUL);
+      response2.setUser(user);
+   
+      responseRepository.saveAll(List.of(response1, response2));
+
+      List<Response> responses = responseRepository.findAllByUserEmail("adrian@example.com");
+      assertThat(responses).hasSize(2);
+
+    }
+
+
 
     @Test
     public void testSave() {
