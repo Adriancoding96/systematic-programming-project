@@ -1,7 +1,6 @@
 package com.adrain.llm_middleware.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.adrain.llm_middleware.exception.ResponseNotFoundException;
 import com.adrain.llm_middleware.mapper.ResponseMapper;
@@ -9,12 +8,13 @@ import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.record.response.ResponseRecord;
 import com.adrain.llm_middleware.repository.ResponseRepository;
 import com.adrain.llm_middleware.security.AuthenticationFacade;
+import com.adrain.llm_middleware.service.ResponseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ResponseServiceImpl {
+public class ResponseServiceImpl implements ResponseService {
 
   private final ResponseRepository repository;
   private final ResponseMapper mapper;
@@ -33,7 +33,7 @@ public class ResponseServiceImpl {
    *
    * @param record: contains response data.
    * */
-  void newResponse(ResponseRecord record) {
+  public void newResponse(ResponseRecord record) {
     repository.save(mapper.toResponse(record));
   }
 
@@ -43,14 +43,16 @@ public class ResponseServiceImpl {
    *
    * @return responseRecords: contains records coneverted from responses
    * */
-  List<ResponseRecord> getAllResponsesByUserId() {
+  public List<ResponseRecord> getAllResponsesByUserEmail() {
+    /*
     String email = authenticationFacade.getAuthentication().getName();
     List<Response> responses = repository.findAllByUserEmail(email); 
     return responses.stream()
       .map(mapper::toRecord)
       .collect(Collectors.toList());
+      */
+    return null;
   }
-
 
   /*
    * Fetchers response by id from database, converts it to a record and
@@ -60,7 +62,7 @@ public class ResponseServiceImpl {
    * @returns record: returns response record.
    * @throws: throws a runtime exception if optional is empty.
    * */
-  ResponseRecord getResponseById(Long id) {
+  public ResponseRecord getResponseById(Long id) {
     Response response = repository.findById(id).
       orElseThrow(() -> new ResponseNotFoundException("Could not find response in database with id: " + id));
     return mapper.toRecord(response); 
@@ -71,7 +73,7 @@ public class ResponseServiceImpl {
    *
    * @param id: id of response table row.
    * */
-  void deleteResponseById(Long id) {
+  public void deleteResponseById(Long id) {
     repository.deleteById(id);
   }
 }
