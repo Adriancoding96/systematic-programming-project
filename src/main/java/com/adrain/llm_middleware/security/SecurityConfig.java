@@ -1,5 +1,7 @@
 package com.adrain.llm_middleware.security;
 
+import com.adrain.llm_middleware.config.CustomCorsConfiguration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
