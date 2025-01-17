@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
       throw new ExistingUserException("User already exists with email: " + email);
     }
     String hashedPassword = passwordEncoder.encode(signupRequest.password());
-    userRepository.save(new User(null, signupRequest.name(), email, hashedPassword));
+    userRepository.save(new User(null, signupRequest.name(), email, hashedPassword, null, null));
   }
 
 
