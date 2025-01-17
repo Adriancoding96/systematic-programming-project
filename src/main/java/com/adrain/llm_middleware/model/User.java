@@ -36,5 +36,8 @@ public class User {
   private String password;
 
   @OneToMany(mappedBy = "user")
+  private List<Prompt> prompts;
+
+  @OneToMany(mappedBy = "user")
   private List<Response> responses; 
 }
