@@ -36,4 +36,5 @@ public class Response {
   private List<String> metaData;
 
   private ResponseRating rating;
+
 }
