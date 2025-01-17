@@ -14,6 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ * AhoCorasickTrieTests is a test class that verifies the correct functionality
+ * of the {@link AhoCorasickTrie} data structure.
+ */
 @SpringBootTest
 public class AhoCorasickTrieTests {
 
@@ -24,12 +28,33 @@ public class AhoCorasickTrieTests {
     trie = new AhoCorasickTrie();
   }
 
+  /**
+   * Tests that the trie is initialized correctly.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>The trie root is not {@code null}.</li>
+   *   <li>The trie root is an instance of {@link AhoCorasickNode}.</li>
+   * </ul>
+   */
   @Test
   public void testInitialization() {
     assertNotNull(trie.getRoot());
     assertTrue(trie.getRoot() instanceof AhoCorasickNode);
   }
 
+
+   /**
+   * Tests inserting a single word into the trie.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>All characters of the inserted word can be navigated from the root node.</li>
+   *   <li>No intermediate node is null.</li>
+   * </ul>
+   */ 
   @Test
   public void testInsertSingleWord() {
     trie.insert("java");
@@ -43,6 +68,16 @@ public class AhoCorasickTrieTests {
         .getChildren()['a']);
   }
 
+  /**
+   * Tests inserting multiple words into the trie at once.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>Each inserted word's characters are correctly linked in the trie.</li>
+   *   <li>No intermediate node is null for each inserted word.</li>
+   * </ul>
+   */
   @Test
   public void testInsertAllWords() {
     trie.insertAll(Arrays.asList("java", "rust", "cpp"));
@@ -69,6 +104,16 @@ public class AhoCorasickTrieTests {
         .getChildren()['p']);
   }
 
+  /**
+   * Tests building failure links for the trie.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>Nodes have a valid failure link, particularly the {@code 'j'} node links back to root.</li>
+   *   <li>Failure links are properly computed for subsequent characters.</li>
+   * </ul>
+   */
   @Test
   public void testBuildFailureLinks() {
     trie.insertAll(Arrays.asList("java", "javascript", "typescript", "ecmascript"));
@@ -80,6 +125,16 @@ public class AhoCorasickTrieTests {
     assertEquals(root, jNode.getFailureLink());
   }
 
+  /**
+   * Tests searching text that contains known patterns.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>All inserted words are found in the given text.</li>
+   *   <li>The returned list of matches includes all the expected words.</li>
+   * </ul>
+   */
   @Test
   public void testSearchText() {
     trie.insertAll(Arrays.asList("java", "javascript", "typescript", "ecmascript"));
@@ -92,6 +147,16 @@ public class AhoCorasickTrieTests {
     assertTrue(result.contains("ecmascript"));
   }
 
+  /**
+   * Tests searching text that does not contain any of the inserted patterns.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>No matches are found for words not present in the text.</li>
+   *   <li>The returned list of matches is empty.</li>
+   * </ul>
+   */
   @Test
   public void testSearchTextWithoutMatches() {
     trie.insertAll(Arrays.asList("java", "javascript", "typescript", "ecmascript"));
@@ -101,6 +166,17 @@ public class AhoCorasickTrieTests {
     assertTrue(result.isEmpty());
   }
 
+
+  /**
+   * Tests searching an empty text.
+   * <p>
+   *     Verifies that:
+   * </p>
+   * <ul>
+   *   <li>No matches are found when the text is empty.</li>
+   *   <li>The returned list of matches is empty.</li>
+   * </ul>
+   */
   @Test
   public void testSearchEmptyText() {
     trie.insertAll(Arrays.asList("java", "javascript", "typescript", "ecmascript"));
