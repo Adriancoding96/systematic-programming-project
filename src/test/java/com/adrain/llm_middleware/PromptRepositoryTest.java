@@ -14,6 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+
+/**
+ * PromptRepositoryTest is a test class to verify the correct functionality
+ * of {@link PromptRepository} querys.
+ *
+ * */
 @DataJpaTest
 public class PromptRepositoryTest {
 
@@ -23,6 +29,16 @@ public class PromptRepositoryTest {
     @Autowired
     private UserRepository userRepository;  
 
+    /**
+     * Tests that {@link Prompt} can be fetched via {@link PromptRepository#findById(Long)}
+     * <p>
+     *    Verifies that:
+     * </p>
+     * <ul>
+     *   <li>The retieved {@code Prompt} is present.</li>
+     *   <li>The {@code Prompt} text matches the one that was saved.</li>
+     * </ul>
+     * */
     @Test
     public void testFindById() {
         Prompt prompt = new Prompt();
@@ -36,7 +52,17 @@ public class PromptRepositoryTest {
         assertThat(optionalPrompt).isPresent();
         assertThat(optionalPrompt.get().getPrompt()).isEqualTo("How do i center a div in html");
     }
-
+ 
+    /**
+     * Tests that all {@link Prompt} entities can be fetched via {@link PromptRepository#findAll()}.
+     * <p>
+     *    Verifies that:
+     * </p>
+     * <ul>
+     *   <li>The list of {@code Prompt} is not empty.</li>
+     *   <li>The returned list has the expected number of {@code Prompt} entities.</li>
+     * </ul>
+     */
     @Test
     public void findAll() {
         Prompt prompt1 = new Prompt();
@@ -56,6 +82,17 @@ public class PromptRepositoryTest {
         assertThat(prompts).hasSize(2);
     }
 
+    /**
+     * Tests that all {@link Prompt} entities associated with a user email can be fetched 
+     * via {@link PromptRepository#findAllByUserEmail(String)}.
+     * <p>
+     *    Verifies that:
+     * </p>
+     * <ul>
+     *   <li>The list of {@code Prompt} is not empty.</li>
+     *   <li>The returned list has the expected number of {@code Prompt} entities for the given user.</li>
+     * </ul>
+     */
     @Test
     public void findAllByUserEmail() {
       User user = new User();
@@ -85,6 +122,16 @@ public class PromptRepositoryTest {
       
     }
 
+    /**
+     * Tests that a {@link Prompt} entity can be saved via {@link PromptRepository#save(Object)}.
+     * <p>
+     *    Verifies that:
+     * </p>
+     * <ul>
+     *   <li>The saved {@code Prompt} has a non-null {@code id}.</li>
+     *   <li>The {@code Prompt} text matches the one that was set prior to saving.</li>
+     * </ul>
+     */
     @Test
     public void testSave() {
         Prompt prompt = new Prompt();
