@@ -22,7 +22,8 @@ public class ResponseMapper {
         null,
         record.responseBody(),
         record.metaData(),
-        record.rating());
+        record.rating(),
+        null);
   }
 
 
