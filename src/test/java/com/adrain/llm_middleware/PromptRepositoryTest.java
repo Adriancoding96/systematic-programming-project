@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.repository.PromptRepository;
+import com.adrain.llm_middleware.repository.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class PromptRepositoryTest {
 
     @Autowired
     private PromptRepository  promptRepository;
+
+    @Autowired
+    private UserRepository userRepository;  
 
     @Test
     public void testFindById() {
@@ -49,6 +54,35 @@ public class PromptRepositoryTest {
         List<Prompt> prompts = promptRepository.findAll();
         assertThat(prompts).isNotEmpty();
         assertThat(prompts).hasSize(2);
+    }
+
+    @Test
+    public void findAllByUserEmail() {
+      User user = new User();
+      user.setName("Adrian");
+      user.setEmail("adrian@example.com");
+      user.setPassword("verysecurepassword123");
+
+      userRepository.save(user);
+
+
+      Prompt prompt1 = new Prompt();
+      prompt1.setPrompt("How do i center a div in html");
+      prompt1.setResponse(null);
+      prompt1.setUser(user);
+
+      Prompt prompt2 = new Prompt();
+      prompt2.setPrompt("How do i java in java");
+      prompt2.setResponse(null);
+      prompt2.setUser(user);
+
+      promptRepository.saveAll(List.of(prompt1, prompt2));
+
+      List<Prompt> prompts = promptRepository.findAllByUserEmail("adrian@example.com");
+      assertThat(prompts).isNotEmpty();
+      assertThat(prompts).hasSize(2);
+
+      
     }
 
     @Test
