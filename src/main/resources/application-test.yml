@@ -1,0 +1,19 @@
+api:
+  key: ${OPENAI_API_KEY}
+
+logging:
+  level:
+    org:
+      springframework: ERROR
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update 
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

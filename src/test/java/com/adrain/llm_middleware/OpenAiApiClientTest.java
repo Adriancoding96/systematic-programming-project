@@ -9,8 +9,10 @@ import com.adrain.llm_middleware.util.KeywordSearcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class OpenAiApiClientTest {
 
   private PromptRepository promptRepository;
