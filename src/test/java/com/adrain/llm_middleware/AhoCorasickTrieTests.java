@@ -13,12 +13,14 @@ import com.adrain.llm_middleware.util.AhoCorasickTrie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  * AhoCorasickTrieTests is a test class that verifies the correct functionality
  * of the {@link AhoCorasickTrie} data structure.
  */
 @SpringBootTest
+@ActiveProfiles("test")
 public class AhoCorasickTrieTests {
 
   private AhoCorasickTrie trie;

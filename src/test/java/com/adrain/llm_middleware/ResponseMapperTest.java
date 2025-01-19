@@ -14,12 +14,14 @@ import com.adrain.llm_middleware.record.response.ResponseRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 /**
  * ResponseMapperTest is a test class to verify the correct functionality
  * of the {@link ResponseMapper} class.
  */
 @SpringBootTest
+@ActiveProfiles("test")
 public class ResponseMapperTest {
 
   private ResponseMapper mapper;
