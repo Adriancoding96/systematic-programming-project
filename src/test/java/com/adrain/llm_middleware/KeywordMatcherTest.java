@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.util.KeywordMatcher;
@@ -222,5 +223,23 @@ public class KeywordMatcherTest {
 
     System.out.println("Execution time: " + (endTime - startTime) + "ms");
     assertNotNull(result);
+  }
+
+  //TODO figure out how to do this correctly.
+  @Test
+  void testMemoryUsage() {
+    Runtime runtime = Runtime.getRuntime();
+
+    Stream<Prompt> simulatedStream = Stream.generate(
+        () -> new Prompt(null, "Simulated prompt", null, null))
+        .limit(100_000);
+
+    runtime.gc();
+    long beforeMemory = runtime.totalMemory() - runtime.freeMemory();
+    Prompt result = matcher.checkSimilarityOfTextAndStream("Simulated prompt", simulatedStream);
+    runtime.gc();
+    long afterMemory = runtime.totalMemory() - runtime.freeMemory();
+
+    System.out.println("Memory used: " + (afterMemory - beforeMemory) + " bytes");
   }
 }
