@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import com.adrain.llm_middleware.api.OpenAiClient;
 import com.adrain.llm_middleware.mapper.PromptMapper;
 import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.record.api.OpenAiResponse;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
@@ -51,10 +52,35 @@ public class PromptServiceImpl implements PromptService {
   }
 
   /**
+   * Method either gets a {@link Response} from database, or openai depening if
+   * a {@link Prompt} with similarity score 0.8 or higher exists in database by user.
+   * <p>
+   *     Checks if:
+   * </p>
+   * <ul>
+   *   <li>{@link Prompt exists in database}.</li>
+   * </ul>
+   *
+   * @param request The {@link PromptRequest} containing the prompt text.
+   * @return A {@link PromptResponse} containing the completion text and the extracted keywords from database or openai.
+   */
+  @Override
+  public PromptResponse newPrompt(PromptRequest request) {
+    Prompt prompt = promptMapper.toPromptFromRequest(request);
+    if(checkIfPromptWithHighSimilarityExistsInDatabase(prompt)){
+      return null; //TODO implement fetching response by prompt id in ResponseService
+    } else {
+      savePrompt(request);
+      return sendPromptToOpenAi(request);
+    }
+
+  }
+
+  /**
    * Creates a new {@Link Prompt} response by sending the given prompt to the OpenAI API
    * and extracting keywords from the returned content.
    * <p>
-   *     Verifies that:
+   *     Checks if:
    * </p>
    * <ul>
    *   <li>A valid completion is retrieved from the OpenAI service.</li>
@@ -64,9 +90,7 @@ public class PromptServiceImpl implements PromptService {
    * @param request The {@link PromptRequest} containing the prompt text.
    * @return A {@link PromptResponse} containing the completion text and the extracted keywords.
    */
-  @Override
-  public PromptResponse newPrompt(PromptRequest request) {
-    savePrompt(request);
+  private PromptResponse sendPromptToOpenAi(PromptRequest request) {
     OpenAiResponse fullResponse = getResponse(request.prompt());
     List<String> keywords = keywordSearcher.getKeywords(fullResponse.choices().get(0).message().content());
     return new PromptResponse(fullResponse.choices().get(0).message().content(), keywords);
@@ -86,7 +110,7 @@ public class PromptServiceImpl implements PromptService {
    * </ul>
    *
    * @param prompt The {@link Prompt} containing the prompt text.
-   * @return A {@primitive boolean} false if {@link Prompt} does not exist, true if it does.
+   * @return a {@primitive boolean} false if {@link Prompt} does not exist, true if it does.
    */
   private boolean checkIfPromptWithHighSimilarityExistsInDatabase(Prompt prompt) {
     User user = userService.getUserBySecurityContext();
