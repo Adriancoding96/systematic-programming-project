@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResponseServiceImpl implements ResponseService {
 
-  private final ResponseRepository repository;
-  private final ResponseMapper mapper;
+  private final ResponseRepository responseRepository;
+  private final ResponseMapper responseMapper;
   private final AuthenticationFacade authenticationFacade;
 
   @Autowired
   public ResponseServiceImpl(ResponseRepository repository, ResponseMapper mapper, AuthenticationFacade authenticationFacade) {
-    this.repository = repository;
-    this.mapper = mapper;
+    this.responseRepository = repository;
+    this.responseMapper = mapper;
     this.authenticationFacade = authenticationFacade;
   }
 
@@ -34,7 +34,7 @@ public class ResponseServiceImpl implements ResponseService {
    * @param record: contains response data.
    * */
   public void newResponse(ResponseRecord record) {
-    repository.save(mapper.toResponse(record));
+    responseRepository.save(responseMapper.toResponse(record));
   }
 
   /*
@@ -63,14 +63,14 @@ public class ResponseServiceImpl implements ResponseService {
    * @throws: throws a runtime exception if optional is empty.
    * */
   public ResponseRecord getResponseById(Long id) {
-    Response response = repository.findById(id).
+    Response response = responseRepository.findById(id).
       orElseThrow(() -> new ResponseNotFoundException("Could not find response in database with id: " + id));
-    return mapper.toRecord(response); 
+    return responseMapper.toRecord(response); 
   }
 
   @Override
   public Response getResponseByPromptId(Long id) {
-    return repository.findByPromptId(id)
+    return responseRepository.findByPromptId(id)
       .orElseThrow(() -> new ResponseNotFoundException("Could not find response in database related to a prompt with id: " + id));
   }
 
@@ -80,6 +80,6 @@ public class ResponseServiceImpl implements ResponseService {
    * @param id: id of response table row.
    * */
   public void deleteResponseById(Long id) {
-    repository.deleteById(id);
+    responseRepository.deleteById(id);
   }
 }
