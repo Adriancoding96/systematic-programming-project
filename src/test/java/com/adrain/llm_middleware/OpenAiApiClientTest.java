@@ -5,6 +5,7 @@ import com.adrain.llm_middleware.mapper.PromptMapper;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
+import com.adrain.llm_middleware.service.impl.ResponseServiceImpl;
 import com.adrain.llm_middleware.service.impl.UserServiceImpl;
 import com.adrain.llm_middleware.util.KeywordMatcher;
 import com.adrain.llm_middleware.util.KeywordSearcher;
@@ -25,6 +26,7 @@ public class OpenAiApiClientTest {
   private PromptMapper promptMapper;
   private UserServiceImpl userServiceImpl;
   private KeywordMatcher keywordMatcher;
+  private ResponseServiceImpl responseServiceImpl;
 
   @BeforeEach
   void setUp() {
@@ -33,8 +35,9 @@ public class OpenAiApiClientTest {
     promptMapper = Mockito.mock(PromptMapper.class);
     userServiceImpl = Mockito.mock(UserServiceImpl.class);
     keywordMatcher = Mockito.mock(KeywordMatcher.class);
+    responseServiceImpl = Mockito.mock(ResponseServiceImpl.class);
 
-    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient, keywordSearcher, promptMapper, userServiceImpl, keywordMatcher);
+    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient, keywordSearcher, promptMapper, userServiceImpl, keywordMatcher, responseServiceImpl);
   }
 
   /*
