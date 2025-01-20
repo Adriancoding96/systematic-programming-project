@@ -1,6 +1,7 @@
 package com.adrain.llm_middleware.service.impl;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.api.OpenAiClient;
 import com.adrain.llm_middleware.mapper.PromptMapper;
@@ -12,6 +13,7 @@ import com.adrain.llm_middleware.record.prompt.PromptResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.UserService;
+import com.adrain.llm_middleware.util.KeywordMatcher;
 import com.adrain.llm_middleware.util.KeywordSearcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +37,17 @@ public class PromptServiceImpl implements PromptService {
   private final KeywordSearcher keywordSearcher;
   private final PromptMapper promptMapper;
   private final UserService userService;
+  private final KeywordMatcher keywordMatcher;
 
   @Autowired
-  public PromptServiceImpl(PromptRepository promptRepository, OpenAiClient openAiClient, KeywordSearcher keywordSearcher, PromptMapper promptMapper, UserService userService) {
+  public PromptServiceImpl(PromptRepository promptRepository, OpenAiClient openAiClient, KeywordSearcher keywordSearcher,
+      PromptMapper promptMapper, UserService userService, KeywordMatcher keywordMatcher) {
     this.promptRepository = promptRepository;
     this.openAiClient = openAiClient;
     this.keywordSearcher = keywordSearcher;
     this.promptMapper = promptMapper;
     this.userService = userService;
+    this.keywordMatcher = keywordMatcher;
   }
 
   /**
@@ -65,6 +70,30 @@ public class PromptServiceImpl implements PromptService {
     OpenAiResponse fullResponse = getResponse(request.prompt());
     List<String> keywords = keywordSearcher.getKeywords(fullResponse.choices().get(0).message().content());
     return new PromptResponse(fullResponse.choices().get(0).message().content(), keywords);
+  }
+
+  /**
+   * Checks if a {@link Prompt} exists in database belonging to authenticated user, using
+   * {@link UserService} to fetch user by security context, and {@link KeywordMatcher} to
+   * calculate similarity score. If a {@link Prompt} exitsts with a similarity score higher
+   * then 0.8 {@link Prompt} will not be null and return true, otherwise method will return
+   * false.
+   * <p>
+   *     Checks if:
+   * </p>
+   * <ul>
+   *   <li>{@link Prompt} belonging to user with similarity score over 0.8 exists in database.</li>
+   * </ul>
+   *
+   * @param prompt The {@link Prompt} containing the prompt text.
+   * @return A {@primitive boolean} false if {@link Prompt} does not exist, true if it does.
+   */
+  private boolean checkIfPromptWithHighSimilarityExistsInDatabase(Prompt prompt) {
+    User user = userService.getUserBySecurityContext();
+    Stream<Prompt> promptStream = promptRepository.findAllByUserEmail(user.getEmail());
+    Prompt existingPromt = keywordMatcher.checkSimilarityOfTextAndStream(prompt.getPrompt(), promptStream);
+    if(existingPromt == null) return false;
+    return true;
   }
 
   /**
