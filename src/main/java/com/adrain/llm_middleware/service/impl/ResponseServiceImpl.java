@@ -68,6 +68,10 @@ public class ResponseServiceImpl implements ResponseService {
     return mapper.toRecord(response); 
   }
 
+  public Response getResponseByPromptId(Long id) {
+    return null;
+  }
+
   /*
    * Deletes table row by id.
    *
