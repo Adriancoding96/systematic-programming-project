@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.model.User;
@@ -117,7 +118,8 @@ public class PromptRepositoryTest {
 
       promptRepository.saveAll(List.of(prompt1, prompt2));
 
-      List<Prompt> prompts = promptRepository.findAllByUserEmail("adrian@example.com");
+      Stream<Prompt> promptStream = promptRepository.findAllByUserEmail("adrian@example.com");
+      List<Prompt> prompts = promptStream.toList();
       assertThat(prompts).isNotEmpty();
       assertThat(prompts).hasSize(2);
 
