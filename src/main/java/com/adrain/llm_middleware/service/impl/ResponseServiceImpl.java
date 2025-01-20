@@ -68,8 +68,10 @@ public class ResponseServiceImpl implements ResponseService {
     return mapper.toRecord(response); 
   }
 
+  @Override
   public Response getResponseByPromptId(Long id) {
-    return null;
+    return repository.findByPromptId(id)
+      .orElseThrow(() -> new ResponseNotFoundException("Could not find response in database related to a prompt with id: " + id));
   }
 
   /*
