@@ -10,6 +10,21 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5
+          --health-retries=5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+
     env:
       API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
@@ -30,6 +45,15 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-m2-
+
+      - name: Wait for database
+        run: |
+          for i in {1..10}; do
+            nc -z localhost 5432 && echo "Database is ready" && exit 0
+            echo "Waiting for database"
+            sleep 5
+          done
+          echo "Database did not start in time" && exit 1
 
       - name: Build with Maven
         run: mvn clean install --batch-mode
