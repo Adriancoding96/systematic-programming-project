@@ -165,6 +165,17 @@ public class AhoCorasickTrie extends Trie {
     return resultList;
   }
 
+  /**
+   * Ensures algorithm only grabs whole words instead of substrings of
+   * words. This is done by checking if letter infront and after is an
+   * letter or digit and not a white space. Currently also accepts if the
+   * adjecent letters are symbols, this is intentional but might be changed
+   * after further testing.
+   *
+   * @param text contains the text string
+   * @param start starting index of word
+   * @param end ending index of word
+   */
   private boolean isWholeWord(String text, int start, int end) {
     if(start > 0) {
       char precedingChar = text.charAt(start - 1);
