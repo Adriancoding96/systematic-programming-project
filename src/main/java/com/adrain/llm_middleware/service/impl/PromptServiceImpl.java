@@ -13,6 +13,7 @@ import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
+import com.adrain.llm_middleware.service.ResponseService;
 import com.adrain.llm_middleware.service.UserService;
 import com.adrain.llm_middleware.util.KeywordMatcher;
 import com.adrain.llm_middleware.util.KeywordSearcher;
@@ -39,16 +40,19 @@ public class PromptServiceImpl implements PromptService {
   private final PromptMapper promptMapper;
   private final UserService userService;
   private final KeywordMatcher keywordMatcher;
+  private final ResponseService responseService;
 
   @Autowired
   public PromptServiceImpl(PromptRepository promptRepository, OpenAiClient openAiClient, KeywordSearcher keywordSearcher,
-      PromptMapper promptMapper, UserService userService, KeywordMatcher keywordMatcher) {
+      PromptMapper promptMapper, UserService userService, KeywordMatcher keywordMatcher, ResponseService responseService) {
     this.promptRepository = promptRepository;
     this.openAiClient = openAiClient;
     this.keywordSearcher = keywordSearcher;
     this.promptMapper = promptMapper;
     this.userService = userService;
     this.keywordMatcher = keywordMatcher;
+    this.responseService = responseService;
+    
   }
 
   /**
@@ -67,8 +71,10 @@ public class PromptServiceImpl implements PromptService {
   @Override
   public PromptResponse newPrompt(PromptRequest request) {
     Prompt prompt = promptMapper.toPromptFromRequest(request);
-    if(checkIfPromptWithHighSimilarityExistsInDatabase(prompt)){
-      return null; //TODO implement fetching response by prompt id in ResponseService
+    Prompt existingPrompt = getPromptWithHighSimilarityScoreIfExistsInDatabase(prompt);
+    if(existingPrompt != null){
+      Response response = responseService.getResponseByPromptId(null);
+      return new PromptResponse(response.getResponseBody(), response.getMetaData());
     } else {
       savePrompt(request);
       return sendPromptToOpenAi(request);
@@ -112,12 +118,11 @@ public class PromptServiceImpl implements PromptService {
    * @param prompt The {@link Prompt} containing the prompt text.
    * @return a {@primitive boolean} false if {@link Prompt} does not exist, true if it does.
    */
-  private boolean checkIfPromptWithHighSimilarityExistsInDatabase(Prompt prompt) {
+  private Prompt getPromptWithHighSimilarityScoreIfExistsInDatabase(Prompt prompt) {
     User user = userService.getUserBySecurityContext();
     Stream<Prompt> promptStream = promptRepository.findAllByUserEmail(user.getEmail());
-    Prompt existingPromt = keywordMatcher.checkSimilarityOfTextAndStream(prompt.getPrompt(), promptStream);
-    if(existingPromt == null) return false;
-    return true;
+    Prompt existingPrompt = keywordMatcher.checkSimilarityOfTextAndStream(prompt.getPrompt(), promptStream);
+    return existingPrompt;
   }
 
   /**
