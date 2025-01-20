@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -187,5 +188,39 @@ public class KeywordMatcherTest {
 
     Prompt result = matcher.checkSimilarityOfTextAndStream(prompt, prompts.stream());
     assertNull(result);
+  }
+
+  /**
+   * Tests the time it takes for {@link KeywordSearcher#checkSimilarityOfTextAndStream}
+   * to run with a stream consisting of 100_000 {@link Prompt} objects. Finally asserts
+   * result not to be null.
+   * <p>
+   *    Checks:
+   * </p>
+   * <ul>
+   *   <li>The time of execution with 100_000 {@link Prompt} objects in stream.</li>
+   * </ul>
+   * <p>
+   *    Verifies that:
+   * </p>
+   * <ul>
+   *   <li>The {@link Prompt} result is not {@code null}.</li>
+   * </ul>
+   */
+  @Test
+  void testPerformance() {
+    String prompt = "How do i program a program";
+    List<Prompt> prompts = new ArrayList<>();
+    for(int i = 0; i < 100_000; i++) {
+      prompts.add(new Prompt(null, "prompt " + i, null, null));
+    }
+    prompts.add(new Prompt(null, "How do i program a program", null, null));
+
+    long startTime = System.currentTimeMillis();
+    Prompt result = matcher.checkSimilarityOfTextAndStream(prompt, prompts.stream());
+    long endTime = System.currentTimeMillis();
+
+    System.out.println("Execution time: " + (endTime - startTime) + "ms");
+    assertNotNull(result);
   }
 }
