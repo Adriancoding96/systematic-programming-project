@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.adrain.llm_middleware.exception.ResponseNotFoundException;
 import com.adrain.llm_middleware.mapper.ResponseMapper;
+import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.record.response.ResponseRecord;
 import com.adrain.llm_middleware.repository.ResponseRepository;
@@ -13,6 +14,14 @@ import com.adrain.llm_middleware.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * ResponseServiceImpl is the implementation of {@link ResponseService} that handles CRUD operations for {@link Response}
+ * entities in the database. It facilitates creating, retrieving, and deleting responses associated with a user or prompt.
+ * <p>
+ *     Utilizes {@link ResponseRepository}, {@link ResponseMapper}, and {@link AuthenticationFacade} for
+ *     repository operations, mapping between entities and records, and authentication context retrieval respectively.
+ * </p>
+ */
 @Service
 public class ResponseServiceImpl implements ResponseService {
 
@@ -27,22 +36,27 @@ public class ResponseServiceImpl implements ResponseService {
     this.authenticationFacade = authenticationFacade;
   }
 
-  /*
-   * Save response sent from client, method simply maps the record
-   * to a entity and saves it to database.
+   /**
+   * Saves a new {@link Response} entity to the database.
+   * <p>
+   *     Maps the provided {@link ResponseRecord} to a {@link Response} entity and persists it in the database.
+   * </p>
    *
-   * @param record: contains response data.
-   * */
+   * @param record The {@link ResponseRecord} containing the response data to be saved.
+   */
   public void newResponse(ResponseRecord record) {
     responseRepository.save(responseMapper.toResponse(record));
   }
 
-  /*
-   * Fetches all responses by user email. Email is provided
-   * through api authentication context.
+  /**
+   * Retrieves all {@link ResponseRecord} objects associated with the authenticated user.
+   * <p>
+   *     Fetches the users email from the authentication context and retrieves all corresponding responses from the database.
+   *     Converts each {@link Response} entity to a {@link ResponseRecord}.
+   * </p>
    *
-   * @return responseRecords: contains records coneverted from responses
-   * */
+   * @return A {@link List} of {@link ResponseRecord} objects associated with the authenticated user.
+   */
   public List<ResponseRecord> getAllResponsesByUserEmail() {
     /*
     String email = authenticationFacade.getAuthentication().getName();
@@ -54,31 +68,48 @@ public class ResponseServiceImpl implements ResponseService {
     return null;
   }
 
-  /*
-   * Fetchers response by id from database, converts it to a record and
-   * returns it to calling method.
+  /**
+   * Retrieves a {@link ResponseRecord} by its id.
+   * <p>
+   *     Fetches a {@link Response} entity from the database using its id and converts it to a {@link ResponseRecord}.
+   *     Throws a {@link ResponseNotFoundException} if the entity is not found.
+   * </p>
    *
-   * @param id: id of table row.
-   * @returns record: returns response record.
-   * @throws: throws a runtime exception if optional is empty.
-   * */
+   * @param id The ID of the {@link Response} to be retrieved.
+   * @return The corresponding {@link ResponseRecord}.
+   * @throws ResponseNotFoundException if no {@link Response} with the given ID is found.
+   */
   public ResponseRecord getResponseById(Long id) {
     Response response = responseRepository.findById(id).
       orElseThrow(() -> new ResponseNotFoundException("Could not find response in database with id: " + id));
     return responseMapper.toRecord(response); 
   }
 
+  /**
+   * Retrieves a {@link Response} by its associated {@link Prompt} id.
+   * <p>
+   *     Fetches a {@link Response} entity from the database using the id of its related {@link Prompt}.
+   *     Throws a {@link ResponseNotFoundException} if the entity is not found.
+   * </p>
+   *
+   * @param id The if of the {@link Prompt} associated with the {@link Response}.
+   * @return The mapped {@link Response} entity.
+   * @throws ResponseNotFoundException if no {@link Response} associated with the given {@link Prompt} id is found.
+   */
   @Override
   public Response getResponseByPromptId(Long id) {
     return responseRepository.findByPromptId(id)
       .orElseThrow(() -> new ResponseNotFoundException("Could not find response in database related to a prompt with id: " + id));
   }
 
-  /*
-   * Deletes table row by id.
+  /**
+   * Deletes a {@link Response} entity from the database by its id.
+   * <p>
+   *     Removes the {@link Response} entity with the specified id from the database.
+   * </p>
    *
-   * @param id: id of response table row.
-   * */
+   * @param id The id of the {@link Response} to be deleted.
+   */
   public void deleteResponseById(Long id) {
     responseRepository.deleteById(id);
   }
