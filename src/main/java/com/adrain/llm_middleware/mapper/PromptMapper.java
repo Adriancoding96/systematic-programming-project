@@ -2,9 +2,14 @@ package com.adrain.llm_middleware.mapper;
 
 import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
+import com.adrain.llm_middleware.record.prompt.PromptResponse;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Component to map {@link PromptRequest} && {@link PromptResponse} to
+ * {@link Prompt} model
+ * */
 @Component
 public class PromptMapper {
 
