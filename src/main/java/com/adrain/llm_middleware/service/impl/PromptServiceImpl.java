@@ -3,11 +3,15 @@ package com.adrain.llm_middleware.service.impl;
 import java.util.List;
 
 import com.adrain.llm_middleware.api.OpenAiClient;
+import com.adrain.llm_middleware.mapper.PromptMapper;
+import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.record.api.OpenAiResponse;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
 import com.adrain.llm_middleware.service.PromptService;
+import com.adrain.llm_middleware.service.UserService;
 import com.adrain.llm_middleware.util.KeywordSearcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +33,20 @@ public class PromptServiceImpl implements PromptService {
   private final PromptRepository promptRepository;
   private final OpenAiClient openAiClient;
   private final KeywordSearcher keywordSearcher;
+  private final PromptMapper promptMapper;
+  private final UserService userService;
 
   @Autowired
-  public PromptServiceImpl(PromptRepository promptRepository, OpenAiClient openAiClient, KeywordSearcher keywordSearcher) {
+  public PromptServiceImpl(PromptRepository promptRepository, OpenAiClient openAiClient, KeywordSearcher keywordSearcher, PromptMapper promptMapper, UserService userService) {
     this.promptRepository = promptRepository;
     this.openAiClient = openAiClient;
     this.keywordSearcher = keywordSearcher;
+    this.promptMapper = promptMapper;
+    this.userService = userService;
   }
 
   /**
-   * Creates a new prompt response by sending the given prompt to the OpenAI API
+   * Creates a new {@Link Prompt} response by sending the given prompt to the OpenAI API
    * and extracting keywords from the returned content.
    * <p>
    *     Verifies that:
@@ -53,10 +61,10 @@ public class PromptServiceImpl implements PromptService {
    */
   @Override
   public PromptResponse newPrompt(PromptRequest request) {
+    savePrompt(request);
     OpenAiResponse fullResponse = getResponse(request.prompt());
     List<String> keywords = keywordSearcher.getKeywords(fullResponse.choices().get(0).message().content());
     return new PromptResponse(fullResponse.choices().get(0).message().content(), keywords);
-     
   }
 
   /**
@@ -71,6 +79,21 @@ public class PromptServiceImpl implements PromptService {
   private OpenAiResponse getResponse(String prompt) {
     Mono<OpenAiResponse> monoResponse = openAiClient.getCompletion(prompt);
     return monoResponse.block();
+  }
+
+
+  /**
+   * Saves {@link Prompt} to the database based on {@link PromptRequest}
+   * content & authenticated {@link User} from security context.
+   *
+   * @param request contains prompt request data.
+   */
+  private void savePrompt(PromptRequest request) {
+    Prompt prompt = promptMapper.toPromptFromRequest(request);
+    User user = userService.getUserBySecurityContext();
+    //Todo figure out what to do if user is not present
+    prompt.setUser(user);
+    promptRepository.save(prompt);
   }
 
 }
