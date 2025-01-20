@@ -5,6 +5,7 @@ import com.adrain.llm_middleware.exception.UserNotFoundException;
 import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.record.auth.SignupRequest;
 import com.adrain.llm_middleware.repository.UserRepository;
+import com.adrain.llm_middleware.security.AuthenticationFacade;
 import com.adrain.llm_middleware.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,13 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final AuthenticationFacade authenticationFacade;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationFacade authenticationFacade) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+    this.authenticationFacade = authenticationFacade;
   }
  
   /*
@@ -51,6 +54,19 @@ public class UserServiceImpl implements UserService {
     }
     String hashedPassword = passwordEncoder.encode(signupRequest.password());
     userRepository.save(new User(null, signupRequest.name(), email, hashedPassword, null, null));
+  }
+
+  /**
+   * Fetches {@link User} from database using email, email is retrieved from security context
+   * using {@link AuthenticationFacade}
+   *
+   * @return user fetched from database
+   * */
+  @Override
+  public User getUserBySecurityContext() { //TODO verify email string is not null
+    String email = authenticationFacade.getAuthentication().getName();
+    return userRepository.findByEmail(email)
+      .orElseThrow(() -> new UserNotFoundException("User could not be found with email: " + email));
   }
 
 
