@@ -33,7 +33,7 @@ public class Prompt {
   @JoinColumn(name = "prompt_id")
   private User user;
  
-  @OneToOne
+  @OneToOne(mappedBy = "prompt")
   private Response response;
   
 }
