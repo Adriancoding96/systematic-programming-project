@@ -1,9 +1,11 @@
 package com.adrain.llm_middleware.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -124,8 +126,9 @@ public class AhoCorasickTrie extends Trie {
    * @return A list of matched keywords found in the text.
    */
   public List<String> searchText(String text) {
+    text = text.toLowerCase();
     AhoCorasickNode current = (AhoCorasickNode) getRoot();
-    List<String> result = new ArrayList<>();
+    Set<String> result = new HashSet<>();
 
     for (int i = 0; i < text.length(); i++) {
       char ch = text.charAt(i);
@@ -143,11 +146,41 @@ public class AhoCorasickTrie extends Trie {
 
       current = (AhoCorasickNode) current.getChildren()[index];
       if(current.getOutput() != null) {
-        result.addAll(current.getOutput());
+        //result.addAll(current.getOutput());
+        
+        //TODO test implementation
+        for(String keyword : current.getOutput()) {
+          int start = i - keyword.length() + 1;
+          int end = i + 1;
+
+          if(isWholeWord(text, start, end)) {
+            result.add(keyword);
+          }
+        }
       }
     }
+    List<String> resultList = new ArrayList<>();
+    resultList.addAll(result);
 
-    return result;
+    return resultList;
+  }
+
+  private boolean isWholeWord(String text, int start, int end) {
+    if(start > 0) {
+      char precedingChar = text.charAt(start - 1);
+      
+      if(Character.isLetterOrDigit(precedingChar)) {
+        return false;
+      }
+    }
+    if(end < text.length()) {
+      char followingChar = text.charAt(end);
+        
+      if(Character.isLetterOrDigit(followingChar)) {
+        return false;
+      }
+    }
+    return true;
   }
   
 }
