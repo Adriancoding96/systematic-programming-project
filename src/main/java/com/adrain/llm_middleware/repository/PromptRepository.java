@@ -1,6 +1,6 @@
 package com.adrain.llm_middleware.repository;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.model.Prompt;
 
@@ -23,9 +23,8 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
    * </p>
    *
    * @param email The email of the user whose prompts are to be fetched.
-   * @return A list of {@code Prompt} entities matching the users email.
+   * @return A stream of {@code Prompt} entities matching the users email.
    */
   @Query("SELECT p FROM Prompt p WHERE p.user.email = :email")
-  List<Prompt> findAllByUserEmail(String email);
-
+  Stream<Prompt> findAllByUserEmail(String email);
 }
