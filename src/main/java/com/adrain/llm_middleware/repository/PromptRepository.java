@@ -1,5 +1,6 @@
 package com.adrain.llm_middleware.repository;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.model.Prompt;
@@ -39,5 +40,5 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
    * @return A {@link Prompt} entity matching the uuid.
    */
   @Query("SELECT p FROM Prompt p WHERE p.uuid = :uuid")
-  Stream<Prompt> findByUuid(@Param("uuid") String uuid);
+  Optional<Prompt> findByUuid(@Param("uuid") String uuid);
 }
