@@ -17,7 +17,7 @@ public interface ResponseRepository extends JpaRepository<Response, Long> {
   @Query("SELECT r FROM Response r WHERE r.prompt.id = :promptId")
   Optional<Response> findByPromptId(@Param("promptId") Long promptId);
 
-  @Query("SELECT r FROM Response r WHERE LOWER(r.responseBody) LIKE LOWER(CONCAT('%', :responseBody, '%'))")
-  List<Response> searchByResponseBody(@Param("responseBody") String responseBody);
+  @Query("SELECT r FROM Response r WHERE LOWER(r.responseBody) LIKE LOWER(CONCAT('%', :responseBody, '%')) AND r.user.email = :email")
+  List<Response> searchByResponseBodyAndUserEmail(@Param("responseBody") String responseBody, @Param("email") String email);
 
 }
