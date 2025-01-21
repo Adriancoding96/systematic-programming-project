@@ -58,6 +58,7 @@ public class PromptServiceImpl implements PromptService {
   /**
    * Method either gets a {@link Response} from database, or openai depening if
    * a {@link Prompt} with similarity score 0.8 or higher exists in database by user.
+   * If similar {@link Prompt} does not exist in database, prompt is persisted to database.
    * <p>
    *     Checks if:
    * </p>
@@ -74,10 +75,10 @@ public class PromptServiceImpl implements PromptService {
     Prompt existingPrompt = getPromptWithHighSimilarityScoreIfExistsInDatabase(prompt);
     if(existingPrompt != null){
       Response response = responseService.getResponseByPromptId(null);
-      return new PromptResponse(response.getResponseBody(), response.getMetaData());
+      return new PromptResponse(response.getResponseBody(), response.getMetaData(), prompt.getUuid());
     } else {
-      savePrompt(request);
-      return sendPromptToOpenAi(request);
+      Prompt savedPrompt = savePrompt(request);
+      return sendPromptToOpenAi(request, savedPrompt.getUuid());
     }
 
   }
@@ -96,10 +97,10 @@ public class PromptServiceImpl implements PromptService {
    * @param request The {@link PromptRequest} containing the prompt text.
    * @return A {@link PromptResponse} containing the completion text and the extracted keywords.
    */
-  private PromptResponse sendPromptToOpenAi(PromptRequest request) {
+  private PromptResponse sendPromptToOpenAi(PromptRequest request, String promptUuid) {
     OpenAiResponse fullResponse = getResponse(request.prompt());
     List<String> keywords = keywordSearcher.getKeywords(fullResponse.choices().get(0).message().content());
-    return new PromptResponse(fullResponse.choices().get(0).message().content(), keywords);
+    return new PromptResponse(fullResponse.choices().get(0).message().content(), keywords, promptUuid);
   }
 
   /**
@@ -145,13 +146,14 @@ public class PromptServiceImpl implements PromptService {
    * content & authenticated {@link User} from security context.
    *
    * @param request contains prompt request data.
+   * @return savedPrompt
    */
-  private void savePrompt(PromptRequest request) {
+  private Prompt savePrompt(PromptRequest request) {
     Prompt prompt = promptMapper.toPromptFromRequest(request);
     User user = userService.getUserBySecurityContext();
     //Todo figure out what to do if user is not present
     prompt.setUser(user);
-    promptRepository.save(prompt);
+    return promptRepository.save(prompt);
   }
 
 }
