@@ -10,5 +10,6 @@ import lombok.Builder;
 public record ResponseRecord(
     String responseBody,
     List<String> metaData,
-    ResponseRating rating
+    ResponseRating rating,
+    String promptUuid
 ) {}
