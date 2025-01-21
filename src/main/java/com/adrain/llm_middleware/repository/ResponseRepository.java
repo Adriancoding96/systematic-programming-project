@@ -7,13 +7,17 @@ import com.adrain.llm_middleware.model.Response;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ResponseRepository extends JpaRepository<Response, Long> {
 
   @Query("SELECT r FROM Response r WHERE r.user.email = :email")
-  List<Response> findAllByUserEmail(String email);
+  List<Response> findAllByUserEmail(@Param("email") String email);
 
   @Query("SELECT r FROM Response r WHERE r.prompt.id = :promptId")
-  Optional<Response> findByPromptId(Long promptId);
+  Optional<Response> findByPromptId(@Param("promptId") Long promptId);
+
+  @Query("SELECT r FROM Response r WHERE LOWER(r.responseBody) LIKE LOWER(CONCAT('%', :responseBody, '%'))")
+  List<Response> searchByResponseBody(@Param("responseBody") String responseBody);
 
 }
