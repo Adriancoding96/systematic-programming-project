@@ -19,9 +19,9 @@ public class PromptResponseLinker {
     this.promptRepository = promptRepository;
   }
 
-  public Prompt getPromptById(Long id) {
-    return promptRepository.findById(id)
-      .orElseThrow(() -> new RuntimeException("Could not find prompt with id: " + id));
+  public Prompt getPromptByUuid(String uuid) {
+    return promptRepository.findByUuid(uuid)
+      .orElseThrow(() -> new RuntimeException("Could not find prompt with uuid: " + uuid));
   } 
   
 }
