@@ -152,16 +152,16 @@ public class KeywordMatcherTest {
   void testCheckSimilarityOfTextAndStream() {
     String prompt = "How do i center a div in html using css";
     List<Prompt> prompts = List.of(
-      new Prompt(null, "I like programming in java", null, null),
-      new Prompt(null, "How", null, null),
-      new Prompt(null, "How do", null, null),
-      new Prompt(null, "How do i", null, null),
-      new Prompt(null, "How do i center", null, null),
-      new Prompt(null, "How do i center a", null, null),
-      new Prompt(null, "How do i center a div in", null, null),
-      new Prompt(null, "How do i center a div in html", null, null), // This should be present in result as 8 of 10 words match
-      new Prompt(null, "How do i center a div in html using", null, null),
-      new Prompt(null, "How do i center a div in html using css", null, null)
+      new Prompt(null, null, "I like programming in java", null, null),
+      new Prompt(null,  null, "How", null, null),
+      new Prompt(null,  null, "How do", null, null),
+      new Prompt(null, null,  "How do i", null, null),
+      new Prompt(null, null,  "How do i center", null, null),
+      new Prompt(null, null,  "How do i center a", null, null),
+      new Prompt(null, null,  "How do i center a div in", null, null),
+      new Prompt(null, null,  "How do i center a div in html", null, null), // This should be present in result as 8 of 10 words match
+      new Prompt(null, null,  "How do i center a div in html using", null, null),
+      new Prompt(null, null,  "How do i center a div in html using css", null, null)
     );
 
     Prompt result = matcher.checkSimilarityOfTextAndStream(prompt, prompts.stream());
@@ -183,8 +183,8 @@ public class KeywordMatcherTest {
   void testCheckSimilarityOfTextAndStream_NoMatch() {
     String prompt = "Java is fun!";
     List prompts = List.of(
-      new Prompt(null, "How do i center a div in html using css", null, null),
-      new Prompt(null, "How do i deep copy a struct in rust", null, null)
+      new Prompt(null, null,  "How do i center a div in html using css", null, null),
+      new Prompt(null, null,  "How do i deep copy a struct in rust", null, null)
     );
 
     Prompt result = matcher.checkSimilarityOfTextAndStream(prompt, prompts.stream());
@@ -213,9 +213,9 @@ public class KeywordMatcherTest {
     String prompt = "How do i program a program";
     List<Prompt> prompts = new ArrayList<>();
     for(int i = 0; i < 100_000; i++) {
-      prompts.add(new Prompt(null, "prompt " + i, null, null));
+      prompts.add(new Prompt(null, null,  "prompt " + i, null, null));
     }
-    prompts.add(new Prompt(null, "How do i program a program", null, null));
+    prompts.add(new Prompt(null, null,  "How do i program a program", null, null));
 
     long startTime = System.currentTimeMillis();
     Prompt result = matcher.checkSimilarityOfTextAndStream(prompt, prompts.stream());
@@ -231,7 +231,7 @@ public class KeywordMatcherTest {
     Runtime runtime = Runtime.getRuntime();
 
     Stream<Prompt> simulatedStream = Stream.generate(
-        () -> new Prompt(null, "Simulated prompt", null, null))
+        () -> new Prompt(null, null,  "Simulated prompt", null, null))
         .limit(100_000);
 
     runtime.gc();
