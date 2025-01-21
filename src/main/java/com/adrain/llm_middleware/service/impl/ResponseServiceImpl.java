@@ -1,6 +1,7 @@
 package com.adrain.llm_middleware.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.adrain.llm_middleware.exception.ResponseNotFoundException;
 import com.adrain.llm_middleware.mapper.ResponseMapper;
@@ -58,14 +59,31 @@ public class ResponseServiceImpl implements ResponseService {
    * @return A {@link List} of {@link ResponseRecord} objects associated with the authenticated user.
    */
   public List<ResponseRecord> getAllResponsesByUserEmail() {
-    /*
     String email = authenticationFacade.getAuthentication().getName();
-    List<Response> responses = repository.findAllByUserEmail(email); 
+    List<Response> responses = responseRepository.findAllByUserEmail(email); 
     return responses.stream()
-      .map(mapper::toRecord)
+      .map(responseMapper::toRecord)
       .collect(Collectors.toList());
-      */
-    return null;
+  }
+
+
+  /**
+   * Retrieves all {@link ResponseRecord} objects associated with the authenticated user and response body.
+   * <p>
+   *     Fetches the users email from the authentication context and retrieves all corresponding responses from the database
+   *     using response body.
+   *     Converts each {@link Response} entity to a {@link ResponseRecord}.
+   * </p>
+   *
+   * @return A {@link List} of {@link ResponseRecord} objects associated with the authenticated user and response body.
+   */
+  @Override
+  public List<ResponseRecord> findResponsesByResponseBodyAndUserEmail(String responseBody) {
+    String email = authenticationFacade.getAuthentication().getName();
+    return responseRepository.searchByResponseBodyAndUserEmail(responseBody, email)
+      .stream()
+      .map(responseMapper::toRecord)
+      .collect(Collectors.toList());
   }
 
   /**
@@ -75,9 +93,9 @@ public class ResponseServiceImpl implements ResponseService {
    *     Throws a {@link ResponseNotFoundException} if the entity is not found.
    * </p>
    *
-   * @param id The ID of the {@link Response} to be retrieved.
+   * @param id The id of the {@link Response} to be retrieved.
    * @return The corresponding {@link ResponseRecord}.
-   * @throws ResponseNotFoundException if no {@link Response} with the given ID is found.
+   * @throws ResponseNotFoundException if no {@link Response} with the given id is found.
    */
   public ResponseRecord getResponseById(Long id) {
     Response response = responseRepository.findById(id).
