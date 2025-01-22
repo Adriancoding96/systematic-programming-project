@@ -3,6 +3,8 @@ package com.adrain.llm_middleware.service.impl;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.transaction.Transactional;
+
 import com.adrain.llm_middleware.api.OpenAiClient;
 import com.adrain.llm_middleware.mapper.PromptMapper;
 import com.adrain.llm_middleware.model.Prompt;
@@ -69,6 +71,7 @@ public class PromptServiceImpl implements PromptService {
    * @param request The {@link PromptRequest} containing the prompt text.
    * @return A {@link PromptResponse} containing the completion text and the extracted keywords from database or openai.
    */
+  @Transactional
   @Override
   public PromptResponse newPrompt(PromptRequest request) {
     Prompt prompt = promptMapper.toPromptFromRequest(request);
@@ -95,6 +98,7 @@ public class PromptServiceImpl implements PromptService {
    * </ul>
    *
    * @param request The {@link PromptRequest} containing the prompt text.
+   * @param promptUuid needed for constructing the {@link PromptResponse} record.
    * @return A {@link PromptResponse} containing the completion text and the extracted keywords.
    */
   private PromptResponse sendPromptToOpenAi(PromptRequest request, String promptUuid) {
@@ -119,6 +123,7 @@ public class PromptServiceImpl implements PromptService {
    * @param prompt The {@link Prompt} containing the prompt text.
    * @return a {@primitive boolean} false if {@link Prompt} does not exist, true if it does.
    */
+  @Transactional
   private Prompt getPromptWithHighSimilarityScoreIfExistsInDatabase(Prompt prompt) {
     User user = userService.getUserBySecurityContext();
     Stream<Prompt> promptStream = promptRepository.findAllByUserEmail(user.getEmail());
@@ -146,7 +151,7 @@ public class PromptServiceImpl implements PromptService {
    * content & authenticated {@link User} from security context.
    *
    * @param request contains prompt request data.
-   * @return savedPrompt
+   * @return savedPrompt containing the persisted {@link Prompt}
    */
   private Prompt savePrompt(PromptRequest request) {
     Prompt prompt = promptMapper.toPromptFromRequest(request);
