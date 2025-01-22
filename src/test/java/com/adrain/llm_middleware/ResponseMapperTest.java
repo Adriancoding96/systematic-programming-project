@@ -75,7 +75,8 @@ public class ResponseMapperTest {
     ResponseRecord record = new ResponseRecord(
         "You use css and html LOL",
         List.of("css", "html"),
-        ResponseRating.VERY_USEFUL
+        ResponseRating.VERY_USEFUL,
+        "uuid"
         );
 
     Response response = mapper.toResponse(record);
