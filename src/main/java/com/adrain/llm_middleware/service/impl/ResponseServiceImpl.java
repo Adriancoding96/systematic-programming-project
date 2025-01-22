@@ -7,10 +7,13 @@ import com.adrain.llm_middleware.exception.ResponseNotFoundException;
 import com.adrain.llm_middleware.mapper.ResponseMapper;
 import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.model.Response;
+import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.record.response.ResponseRecord;
 import com.adrain.llm_middleware.repository.ResponseRepository;
 import com.adrain.llm_middleware.security.AuthenticationFacade;
 import com.adrain.llm_middleware.service.ResponseService;
+import com.adrain.llm_middleware.service.UserService;
+import com.adrain.llm_middleware.util.PromptResponseLinker;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,12 +32,17 @@ public class ResponseServiceImpl implements ResponseService {
   private final ResponseRepository responseRepository;
   private final ResponseMapper responseMapper;
   private final AuthenticationFacade authenticationFacade;
+  private final UserService userService;
+  private final PromptResponseLinker promptResponseLinker;
 
   @Autowired
-  public ResponseServiceImpl(ResponseRepository repository, ResponseMapper mapper, AuthenticationFacade authenticationFacade) {
+  public ResponseServiceImpl(ResponseRepository repository, ResponseMapper mapper, AuthenticationFacade authenticationFacade,
+                              UserService userService, PromptResponseLinker promptResponseLinker) {
     this.responseRepository = repository;
     this.responseMapper = mapper;
     this.authenticationFacade = authenticationFacade;
+    this.userService = userService; 
+    this.promptResponseLinker = promptResponseLinker;
   }
 
    /**
@@ -46,7 +54,12 @@ public class ResponseServiceImpl implements ResponseService {
    * @param record The {@link ResponseRecord} containing the response data to be saved.
    */
   public void newResponse(ResponseRecord record) {
-    responseRepository.save(responseMapper.toResponse(record));
+    User user = userService.getUserBySecurityContext();
+    Prompt prompt = promptResponseLinker.getPromptByUuid(record.promptUuid());
+    Response response = responseMapper.toResponse(record);
+    response.setUser(user);
+    response.setPrompt(prompt);
+    responseRepository.save(response);
   }
 
   /**
