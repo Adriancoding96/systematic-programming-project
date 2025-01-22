@@ -39,7 +39,8 @@ public class ResponseMapper {
     return new ResponseRecord(
         response.getResponseBody(),
         response.getMetaData(),
-        response.getRating());
+        response.getRating(),
+        response.getPrompt().getUuid());
   }
 
 }
