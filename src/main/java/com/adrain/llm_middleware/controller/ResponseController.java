@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,15 +28,20 @@ public class ResponseController {
   }
 
   @PostMapping("/new")
-  ResponseEntity<Void> newResponse(ResponseRecord record) {
-    service.newResponse(record); 
+  ResponseEntity<Void> newResponse(@RequestBody ResponseRecord record) {
+    service.newResponse(record);
     return ResponseEntity.ok().build();
   }
 
   @GetMapping
   ResponseEntity<List<ResponseRecord>> getAllResponsesByUserId() {
-    //Authorization will be handled in service using webcontext so no need to pass user details
     List<ResponseRecord> responses = service.getAllResponsesByUserEmail();
+    return ResponseEntity.ok(responses);
+  }
+
+  @GetMapping("/search")
+  ResponseEntity<List<ResponseRecord>> searchResponses(@RequestParam String query) {
+    List<ResponseRecord> responses = service.findResponsesByResponseBodyAndUserEmail(query);
     return ResponseEntity.ok(responses);
   }
 
