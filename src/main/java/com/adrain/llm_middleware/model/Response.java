@@ -3,6 +3,7 @@ package com.adrain.llm_middleware.model;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +35,7 @@ public class Response {
   @OneToOne
   private Prompt prompt;
 
+  @Column(columnDefinition = "TEXT")
   private String responseBody;
 
   private List<String> metaData;
