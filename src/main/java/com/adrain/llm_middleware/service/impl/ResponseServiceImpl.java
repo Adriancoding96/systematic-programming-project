@@ -23,8 +23,17 @@ import org.springframework.stereotype.Service;
  * entities in the database. It facilitates creating, retrieving, and deleting responses associated with a user or prompt.
  * <p>
  *     Utilizes {@link ResponseRepository}, {@link ResponseMapper}, and {@link AuthenticationFacade} for
- *     repository operations, mapping between entities and records, and authentication context retrieval respectively.
+ *     repository operations, mapping between entities and records, and authentication context retrieval.
+ *     Temporarly uses {@link PromptResponseLinker} for avoiding circular depenendency injection.
  * </p>
+ *
+ * @see ResponseService
+ * @see Response
+ * @see ResponseRecord
+ * @see ResponseRepository
+ * @see ResponseMapper
+ * @see AuthenticationFacade
+ * @see PromptResponseLinker
  */
 @Service
 public class ResponseServiceImpl implements ResponseService {
