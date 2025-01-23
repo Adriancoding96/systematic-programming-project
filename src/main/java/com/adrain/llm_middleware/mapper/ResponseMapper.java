@@ -5,16 +5,22 @@ import com.adrain.llm_middleware.record.response.ResponseRecord;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Component to map {@link ResponseRecord} to {@link Response}
+ * && {@link Response} to {@link ResponseRecord}. 
+ *
+ * @see ResponseRecord
+ * @see Response
+ * */
 @Component
 public class ResponseMapper {
 
 
-  /*
-   * Takes a record and converts it in to a Response
-   * model.
+  /**
+   * Takes a {@link ResponseRecord} and converts it in to a {@link Response}
    *
-   * @Param record: response record.
-   * @return response: Response converted from record
+   * @Param record containing response data.
+   * @return response converted from {@link ResponseRecord}
    * */
   public Response toResponse(ResponseRecord record) {
     return new Response(
@@ -27,12 +33,11 @@ public class ResponseMapper {
   }
 
 
-  /*
-   * Takes a Response and converts it in to a record 
-   * model.
+  /**
+   * Takes a {@link Response} and converts it in to a {@link ResponseRecord}. 
    *
-   * @Param response: response model.
-   * @return record: ResponseRecord converted from response model 
+   * @Param response model.
+   * @return record {@link ResponseRecord} converted from {@link Response}. 
    * */
 
   public ResponseRecord toRecord(Response response) {
