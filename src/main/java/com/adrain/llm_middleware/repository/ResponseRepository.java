@@ -9,6 +9,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Repository interface for managing {@link Response} rows in database table.
+ *
+ * <p>Custom queries are defined using Java Persistence Query Language to fetch responses
+ * based on specific criteria such as user email, prompt id, or response body.</p>
+ *
+ * @see JpaRepository
+ * @see Response
+ */
 public interface ResponseRepository extends JpaRepository<Response, Long> {
 
   @Query("SELECT r FROM Response r WHERE r.user.email = :email")
