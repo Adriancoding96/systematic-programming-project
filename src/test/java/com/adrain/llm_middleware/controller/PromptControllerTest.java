@@ -32,6 +32,49 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * Unit tests for the {@link PromptController} class.
+ *
+ * <p>This test class defines unit tests for verifying functionalite of the endpoints of
+ * {@link PromptController}. It uses {@link MockMvc} to simulate http requests and
+ * validate the responses and ensuring that the controller interacts correctly with the
+ * {@link PromptService}.</p>
+ *
+ * <p>The tests cover the following endpoints:
+ * <ul>
+ *   <li>{@code POST /api/prompt/new} - Tests the creation of a new {@link Prompt}.</li>
+ *   <li>{@code GET /api/prompt} - Tests fetching all {@link PromptRecord}s.</li>
+ *   <li>{@code GET /api/prompt/email/{email}} - Tests fetching {@link PromptRecord}s by {@link User} email.</li>
+ *   <li>{@code GET /api/prompt/{id}} - Tests fetching a {@link PromptRecord} by its id.</li>
+ *   <li>{@code DELETE /api/prompt/{id}} - Tests deleting a {@link PromptRecord} by its id.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Each test method is annotated with {@link WithMockUser} to simulate an authenticated user,
+ * and the {@link MockMvc} instance is configured to include CSRF tokens in all requests to
+ * ensure compatibility with Spring Security.</p>
+ *
+ * <p>This class uses the following key components:
+ * <ul>
+ *   <li>{@link MockMvc} - To simulate HTTP requests and validate responses.</li>
+ *   <li>{@link MockBean} - To mock the {@link PromptService} and isolate the controller from
+ *       external dependencies.</li>
+ *   <li>{@link ObjectMapper} - To serialize and deserialize JSON.</li>
+ *   <li>{@link WebApplicationContext} - To configure the Spring application context for testing.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>All tests are executed with the {@code test} profile active, ensuring that the application
+ * configuration is tailored for testing purposes.</p>
+ *
+ * @see PromptController
+ * @see PromptService
+ * @see PromptRequest
+ * @see PromptResponse
+ * @see PromptRecord
+ * @see MockMvc
+ * @see WithMockUser
+ */
 @WebMvcTest(PromptController.class)
 @ActiveProfiles("test")
 public class PromptControllerTest {
