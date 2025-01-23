@@ -1,6 +1,7 @@
 package com.adrain.llm_middleware.mapper;
 
 import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.record.prompt.PromptRecord;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
 
@@ -33,6 +34,19 @@ public class PromptMapper {
     Prompt prompt = new Prompt();
     prompt.setPrompt(request.prompt());
     return prompt;
+  }
+
+
+  /**
+   * 
+   * Maps a {@link Prompt} to a {@link PromptRecord}.
+   *
+   * @param prompt the {@link Prompt} entity
+   * @return the {@link PromptRecord} mapped from the {@link Prompt}
+   *
+   * */
+  public PromptRecord toRecordFromPrompt(Prompt prompt) {
+    return new PromptRecord(prompt.getPrompt(), prompt.getUuid());
   }
   
 }
