@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import com.adrain.llm_middleware.exception.AccessDeniedException;
+import com.adrain.llm_middleware.model.User;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,17 +18,30 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 
 
+/**
+ * Utility class for handling JWT tokens.
+ * This class provides methods for generating, validating, and getting information from JWT tokens.
+ * It uses the {@link Jwts} library for token creation and validation.
+ *
+ * @see Jwts
+ */
 public class JwtHelper {
 
+  /**
+   *
+   * Static attributes defining the key generation algorithm, and
+   * the standard time for jwt tokens to expire.
+   *
+   */
   private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
   private static final int MINUTES = 60;
 
-  /*
-   * Method to create a jwt token for authentication request
+  /**
+   * Generates a JWT token for the given email.
    *
-   * @param email: users email
-   * @return token: returns generated token as a string
-   * */
+   * @param email the email of the {@link User} to be set in the JWT token
+   * @return the generated JWT token as a string
+   */
   public static String generateToken(String email) {
     var now = Instant.now();
     return Jwts.builder()
@@ -38,36 +52,40 @@ public class JwtHelper {
       .compact();
   }
 
-  /*
-   * Helper method to extract username from jwt token
+  /**
+   * Extracts the {@link User}s username (email) from the given JWT token.
    *
-   * @param token: jwt token
-   * @return username: returns extracted username
-   * */
+   * @param token the JWT token
+   * @return the username (email) extracted from the token
+   */
   public static String extractUsername(String token) {
     return getTokenBody(token).getSubject();
   }
 
-  /*
-   * Method validates the token and the user it belongs to
+  /**
+   * Validates the JWT token against the {@link UserDetails}.
+   * The token is considered valid if:
+   * <ul>
+   *   <li>The username in the token matches the username is valid.</li>
+   *   <li>The token is not expired.</li>
+   * </ul>
    *
-   * @param token: string representation of jwt token
-   * @param userDetails: UserDetails object from spring.security.core
-   * */
+   * @param token the JWT token to validate
+   * @param userDetails the user details to validate against
+   * @return {@code true} if the token is valid, else {@code false}
+   */
   public static boolean validateToken(String token, UserDetails userDetails) {
     final String username = extractUsername(token);
     return username.equals(userDetails.getUsername()) && !isTokenExpired(token); 
   }
 
-  /*
-   * Method returns authentication claims extracted from jwt token
+  /**
+   * Extracts the claims from the given JWT token.
    *
-   * @param token: string representation of jwt token
-   * @return claims: return a claims object containing authentication information
-   * -- docs: https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-token-claims
-   * @throws SignatureException: throws exception when signature does not match local jwt signature
-   * @throws ExpiredJwtException: throws exception when jwt token is expired
-   * */
+   * @param token the JWT token
+   * @return the claims extracted from the token
+   * @throws AccessDeniedException if the token signature is invalid / the token has expired
+   */
   private static Claims getTokenBody(String token) {
     try {
       return Jwts
@@ -81,12 +99,12 @@ public class JwtHelper {
     }
   }
 
-  /*
-   * Helper method to check if jwt token has expired
+  /**
+   * Checks if the given JWT token is expired.
    *
-   * @param token: string representation of jwt token
-   * @return boolean: returns true if token is expired. false if token is still valid
-   * */
+   * @param token the JWT token
+   * @return {@code true} if the token is expired, else {@code false}
+   */
   private static boolean isTokenExpired(String token) {
     Claims claims = getTokenBody(token);
     return claims.getExpiration().before(new Date());
