@@ -38,7 +38,7 @@ public interface PromptService {
    *
    * @return a fethced {@link Response} as {@link ResponseRecord}.
    */
-  ResponseRecord getResponseById(Long id);
+  PromptResponse getResponseById(Long id);
 
 
   /**
