@@ -99,7 +99,7 @@ public class PromptControllerTest {
       .andExpect(jsonPath("$.uuid").value("awesome-uuid-3000"));
   }
 
-  /**
+/**
  * Tests the {@code /api/prompt/} get endpoint to ensure it fetches a List of {@link PromptRecord}s
  *
  * <p>This test verifies the following:
@@ -136,8 +136,47 @@ public class PromptControllerTest {
       .andExpect(jsonPath("$[1].uuid").value("654321"))
       .andExpect(jsonPath("$[2].prompt").value("Why is my unit tests failing"))
       .andExpect(jsonPath("$[2].uuid").value("401401"));
-
-
   }
+
+  /**
+ * Tests the {@code /api/prompt/} get endpoint to ensure it fetches a List of {@link PromptRecord}s
+ *
+ * <p>This test verifies the following:
+ * <ul>
+ *   <li>The endpoint returns an HTTP status code of 200 (OK).</li>
+ *   <li>The response body contains the expected {@code List} of {@link PromptRecord} with fields including:
+ *     <ul>
+ *       <li>The {@code prompt} field matches the expected prompt text.</li>
+ *       <li>The {@code uuid} field matches the expected uuid value.</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <p>This test uses MockMvc to simulate an HTTP request to the endpoint and performs assertions
+ * on the response to ensure it meets the expected criteria.
+ *
+ * @throws Exception if an error occurs during the test execution, Specifically mapping to JSON using
+ * {@link ObjectMapper}.
+ */
+  @Test
+  @WithMockUser
+  public void testGetAllPromptsByUserEmail() throws Exception {
+    String email = "master.programmer.noob.unit.tester@infiniterecursion.com";
+    PromptRecord record1 = new PromptRecord("How do i center a div in html?", "123456");
+    PromptRecord record2 = new PromptRecord("How do i program a program", "654321");
+    PromptRecord record3 = new PromptRecord("Why is my unit tests failing", "401401");
+    List<PromptRecord> records = List.of(record1, record2, record3);
+
+    when(promptService.getAllPromptsByUserEmail(email)).thenReturn(records);
+    mockMvc.perform(get("/api/prompt/email/{email}", email))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$[0].prompt").value("How do i center a div in html?"))
+      .andExpect(jsonPath("$[0].uuid").value("123456"))
+      .andExpect(jsonPath("$[1].prompt").value("How do i program a program"))
+      .andExpect(jsonPath("$[1].uuid").value("654321"))
+      .andExpect(jsonPath("$[2].prompt").value("Why is my unit tests failing"))
+      .andExpect(jsonPath("$[2].uuid").value("401401"));
+  }
+
 
 }
