@@ -33,6 +33,7 @@ import reactor.core.publisher.Mono;
  *     repository operations, OpenAI requests, keyword extraction and, handling related {@link Response}s.
  * </p>
  *
+ * @see PromptService
  * @see Prompt
  * @see PromptRequest
  * @see PromptResponse
