@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
  *     It uses regular expressions to analyze text and calculate similarity scores between
  *     a given input text and a collection of {@link Prompt} objects.
  * </p>
+ *
+ * @see Prompt 
  */
 @Component
 public class KeywordMatcher {
