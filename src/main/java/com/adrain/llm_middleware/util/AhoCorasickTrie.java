@@ -19,6 +19,9 @@ import lombok.Setter;
  *     constructs failure links to navigate on mismatches, and provides methods to
  *     insert keywords and search for them in a given text.
  * </p>
+ *
+ * @see Trie
+ * @see AhoCorasickNode
  */
 @Getter
 @Setter
@@ -45,7 +48,7 @@ public class AhoCorasickTrie extends Trie {
   }
 
   /**
-   * Inserts a single word into this trie.
+   * Inserts a single word into the trie.
    *
    * @param word The word to insert.
    */
