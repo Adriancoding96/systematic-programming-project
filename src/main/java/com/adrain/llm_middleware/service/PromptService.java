@@ -30,19 +30,26 @@ public interface PromptService {
    *
    * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
    */
-  List<PromptRecord> getAllResponses();
+  List<PromptRecord> getAllPrompts();
+
+  /**
+   * Fetches all {@link Prompt}s as {@link PromptRecord} from database by {@link User} email.
+   *
+   * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
+   */
+  List<PromptRecord> getAllPromptsByUserEmail(String email);
 
   /**
    * Fetches {@link Prompt} from the database by id amd returns it as {@link PromptRecord}.
    *
    * @return a fethced {@link Prompt} as {@link PromptRecord}.
    */
-  PromptRecord getResponseById(Long id);
+  PromptRecord getPromptById(Long id);
 
 
   /**
    * Deletes {@link Prompt} from the database.
    */
-  void deleteResponseById(Long id);
+  void deletePromptById(Long id);
   
 }
