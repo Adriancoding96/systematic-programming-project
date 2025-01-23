@@ -3,10 +3,9 @@ package com.adrain.llm_middleware.service;
 import java.util.List;
 
 import com.adrain.llm_middleware.model.Prompt;
-import com.adrain.llm_middleware.model.Response;
+import com.adrain.llm_middleware.record.prompt.PromptRecord;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
-import com.adrain.llm_middleware.record.response.ResponseRecord;
 
 /**
  * Service interface for handling {@link Prompt} related requests.
@@ -27,22 +26,22 @@ public interface PromptService {
   PromptResponse newPrompt(PromptRequest request);
 
   /**
-   * Fetches all {@link Response}s as {@link ResponseRecord} from datavase.
+   * Fetches all {@link Prompt}s as {@link PromptRecord} from database.
    *
-   * @return a list of {@link ResponseRecord}s mapped from {@link Response} entities.
+   * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
    */
-  List<PromptResponse> getAllResponses();
+  List<PromptRecord> getAllResponses();
 
   /**
-   * Fetches {@link Response} from the database by id amd returns it as {@link ResponseRecord}.
+   * Fetches {@link Prompt} from the database by id amd returns it as {@link PromptRecord}.
    *
-   * @return a fethced {@link Response} as {@link ResponseRecord}.
+   * @return a fethced {@link Prompt} as {@link PromptRecord}.
    */
-  PromptResponse getResponseById(Long id);
+  PromptRecord getResponseById(Long id);
 
 
   /**
-   * Deletes {@link Response} from the database.
+   * Deletes {@link Prompt} from the database.
    */
   void deleteResponseById(Long id);
   
