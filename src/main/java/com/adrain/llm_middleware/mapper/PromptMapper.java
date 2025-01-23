@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 /**
  * Component to map {@link PromptRequest} && {@link PromptResponse} to
  * {@link Prompt} model
+ *
+ * @see PromptRequest
+ * @see PromptResponse
+ * @see Prompt
  * */
 @Component
 public class PromptMapper {
