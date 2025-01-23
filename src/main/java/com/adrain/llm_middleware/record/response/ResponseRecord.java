@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 /**
- * Represents a {@link Response} containing details of a {@link Users} response to a llm response.
+ * Represents a {@link Response} containing details of a {@link User} response to a llm response.
  * It is annotated with {@link Builder} to support the builder pattern for object creation.
  * It uses {@code JsonProperty} to help with deserialzation issues.
  *
