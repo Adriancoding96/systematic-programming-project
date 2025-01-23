@@ -140,7 +140,7 @@ public class PromptControllerTest {
 
   /**
  * Tests the {@code /api/prompt/} get endpoint to ensure it fetches a List of {@link PromptRecord}s
- *
+ * related to provided {@link User} email.
  * <p>This test verifies the following:
  * <ul>
  *   <li>The endpoint returns an HTTP status code of 200 (OK).</li>
