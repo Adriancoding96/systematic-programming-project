@@ -21,6 +21,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
+/**
+ * Component is responsible for handling JWT authentication for incoming http requests.
+ * This filter extends {@link OncePerRequestFilter} which ensures single execution.
+ * It validates JWT tokens from the "Authorization" header and sets the authentication context
+ * if the token is valid.
+ *
+ * <p>This filter excludes certain endpoints for example "/h2-console" from validation.</p>
+ *
+ * @see OncePerRequestFilter
+ * @see JwtHelper
+ * @see UserDetailsService
+ */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -33,14 +45,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     this.objectMapper = objectMapper;
   }
 
-  /*
-   * Method defines endpoints that does not need jwt token headers
+   /**
+   * Defines endpoints should be ignored by the authorizaiton filter.
    *
-   * @param request: contains http request
-   * @return boolean: returns true if request is directed to one of specified endpoints not to be filtered
-   * returns false if enpoint is not specified in method.
-   *
-   * */
+   * @param request the gttp request
+   * @return {@code true} if the request should not be filtered, {@code false} otherwise
+   * @throws ServletException if an error occurs from http request
+   */
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
     String path = request.getRequestURI();
@@ -48,14 +59,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   }
 
 
-  /*
-   * Method extracts data from jwt token from authorization header core auth logic is handeled within
-   * JwtHelper.
+  /**
+   * Processes the incoming request to validate the JWT token and set the authentication context.
+   * This method extracts the token from the "Authorization" header, validates it using {@link JwtHelper},
+   * and sets the authentication context if the token is valid.
    *
-   * @param request: contains http request
-   * @param response: contains initial response from API
-   * @param filterChain: FilterChain object that contains a chain of filtered requests
-   *
+   * @param request the http request
+   * @param response the http response
+   * @param filterChain the filter chain containing the the authorition pipe / chain
+   * @throws ServletException if an error occurs during the http request
    */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException {
@@ -94,12 +106,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
   }
   
-  /*
-   * Helper method to create an ApiErrorResponse JSON representation if error occurs in calling method
+
+  /**
+   * Writes an error response to the http response in a json format.
    *
-   * @param response: contains initial API response
-   * @param errorResponse: contains ApiRerrorResponse object
-   * */
+   * @param response the http response
+   * @param errorResponse the error response object to be created
+   */
   private void writeErrorResponse(HttpServletResponse response, ApiErrorResponse errorResponse) {
       try {
           response.getWriter().write(toJson(errorResponse));
@@ -108,13 +121,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       }
   }
 
-  /*
-   * Helper method to convert ApiErrorResponse to JSON
+  /**
+   * Converts an {@link ApiErrorResponse} object to json format.
    *
-   * @param response: contains ApiErrorResponse object
-   * @return json: return ApiErrorResponse as json
-   * @Exception e: if exception is encountered returns empty string
-   * */
+   * @param response the error response object to convert
+   * @return the json representation of the error response
+   */
   private String toJson(ApiErrorResponse response) {
     try {
       return objectMapper.writeValueAsString(response);
