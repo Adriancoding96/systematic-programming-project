@@ -11,6 +11,7 @@ import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.record.api.OpenAiResponse;
+import com.adrain.llm_middleware.record.prompt.PromptRecord;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
@@ -169,5 +170,32 @@ public class PromptServiceImpl implements PromptService {
     prompt.setUser(user);
     return promptRepository.save(prompt);
   }
+
+  /**
+   * Fetches all {@link Prompt}s as {@link PromptRecord} from datavase.
+   *
+   * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
+   */
+  public List<PromptRecord> getAllResponses() {
+    return null;
+  }
+
+  /**
+   * Fetches {@link Prompt} from the database by id amd returns it as {@link PromptRecord}.
+   *
+   * @return a fethced {@link Prompt} as {@link PromptRecord}.
+   */
+  public PromptRecord getResponseById(Long id) {
+    return null;
+  }
+
+
+  /**
+   * Deletes {@link Response} from the database.
+   */
+  public void deleteResponseById(Long id) {
+
+  }
+ 
 
 }
