@@ -20,6 +20,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents a response entity in the API.
+ * This class is mapped to a database table and contains details about a response,
+ * including its id, associated {@link Prompt}, response body, metadata, {@link ResponseRating},
+ * and {@link User}.
+ *
+ * <p>The class uses Lombok annotations to automatically generate 
+ * getters, setters, constructors, and {@code toString}.</p>
+ *
+ * @see Prompt
+ * @see ResponseRating
+ * @see User
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
