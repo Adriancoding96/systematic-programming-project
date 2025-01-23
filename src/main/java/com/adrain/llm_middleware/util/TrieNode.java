@@ -10,6 +10,8 @@ import lombok.Setter;
  *     and a flag indicating if the node corresponds to the end of a word.
  *     The children array is sized at 128 to work with ASCII.
  * </p>
+ *
+ * @see Trie
  */
 @Getter
 @Setter
