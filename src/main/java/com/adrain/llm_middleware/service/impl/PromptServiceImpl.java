@@ -174,13 +174,24 @@ public class PromptServiceImpl implements PromptService {
   }
 
   /**
-   * Fetches all {@link Prompt}s as {@link PromptRecord} from datavase.
+   * Fetches all {@link Prompt}s as {@link PromptRecord} from database.
    *
    * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
    */
-  public List<PromptRecord> getAllResponses() {
+  public List<PromptRecord> getAllPrompts() {
     return promptRepository.findAll()
       .stream()
+      .map(promptMapper::toRecordFromPrompt)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Fetches all {@link Prompt}s as {@link PromptRecord} from database by {@link User} email.
+   *
+   * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
+   */
+  public List<PromptRecord> getAllPromptsByUserEmail(String email) {
+    return promptRepository.findAllByUserEmail(email)
       .map(promptMapper::toRecordFromPrompt)
       .collect(Collectors.toList());
   }
@@ -190,7 +201,7 @@ public class PromptServiceImpl implements PromptService {
    *
    * @return a fethced {@link Prompt} as {@link PromptRecord}.
    */
-  public PromptRecord getResponseById(Long id) {
+  public PromptRecord getPromptById(Long id) {
     Prompt prompt = promptRepository.findById(id)
       .orElseThrow(() -> new PromptNotFoundException("Prompt cpuld not be found in database with id: " + id));
     return promptMapper.toRecordFromPrompt(prompt);
@@ -200,7 +211,7 @@ public class PromptServiceImpl implements PromptService {
   /**
    * Deletes {@link Response} from the database.
    */
-  public void deleteResponseById(Long id) {
+  public void deletePromptById(Long id) {
     promptRepository.deleteById(id);
   }
  
