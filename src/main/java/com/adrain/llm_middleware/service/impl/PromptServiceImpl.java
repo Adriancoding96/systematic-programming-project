@@ -29,9 +29,17 @@ import reactor.core.publisher.Mono;
  * PromptServiceImpl is the implementation of {@link PromptService} that handles creating new {@link PromptResponse}
  * objects by communicating with OpenAI API and extracting keywords from the resulting text.
  * <p>
- *     Uses {@link PromptRepository}, {@link OpenAiClient}, and {@link KeywordSearcher} for
- *     repository operations, OpenAI requests, and keyword extraction respectively.
+ *     Uses {@link PromptRepository}, {@link OpenAiClient}, {@link KeywordSearcher} and, {@link ResponseService} for
+ *     repository operations, OpenAI requests, keyword extraction and, handling related {@link Response}s.
  * </p>
+ *
+ * @see Prompt
+ * @see PromptRequest
+ * @see PromptResponse
+ * @see OpenAiClient
+ * @see PromptRepository
+ * @see KeywordSearcher
+ * @see ResponseService
  */
 @Service
 public class PromptServiceImpl implements PromptService {
