@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.record.prompt.PromptRecord;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
@@ -138,8 +139,8 @@ public class PromptControllerTest {
       .andExpect(jsonPath("$[2].uuid").value("401401"));
   }
 
-  /**
- * Tests the {@code /api/prompt/} get endpoint to ensure it fetches a List of {@link PromptRecord}s
+/**
+ * Tests the {@code /api/prompt/email/{email}} get endpoint to ensure it fetches a List of {@link PromptRecord}s
  * related to provided {@link User} email.
  * <p>This test verifies the following:
  * <ul>
@@ -176,6 +177,38 @@ public class PromptControllerTest {
       .andExpect(jsonPath("$[1].uuid").value("654321"))
       .andExpect(jsonPath("$[2].prompt").value("Why is my unit tests failing"))
       .andExpect(jsonPath("$[2].uuid").value("401401"));
+  }
+
+/**
+ * Tests the {@code /api/prompt/{id}} get endpoint to ensure it fetches a {@link PromptRecord}
+ * related to provided {@link Prompt} id.
+ * <p>This test verifies the following:
+ * <ul>
+ *   <li>The endpoint returns an HTTP status code of 200 (OK).</li>
+ *   <li>The response body contains the expected {@link PromptRecord} with fields including:
+ *     <ul>
+ *       <li>The {@code prompt} field matches the expected prompt text.</li>
+ *       <li>The {@code uuid} field matches the expected uuid value.</li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <p>This test uses MockMvc to simulate an HTTP request to the endpoint and performs assertions
+ * on the response to ensure it meets the expected criteria.
+ *
+ * @throws Exception if an error occurs during the test execution, Specifically mapping to JSON using
+ * {@link ObjectMapper}.
+ */
+  @Test
+  @WithMockUser
+  public void testGetPromptById() throws Exception {
+    PromptRecord record = new PromptRecord("How do i write unit tests for unit tests", "1234321");
+
+    when(promptService.getPromptById(1L)).thenReturn(record);
+    mockMvc.perform(get("/api/prompt/{id}", 1L))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.prompt").value("How do i write unit tests for unit tests"))
+      .andExpect(jsonPath("$.uuid").value("1234321"));
   }
 
 
