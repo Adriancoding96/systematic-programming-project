@@ -14,6 +14,8 @@ import org.springframework.data.repository.query.Param;
  * <p>
  * Provides methods to perform CRUD operations and custom queries on {@code Prompt} objects.
  * </p>
+ *
+ * @see Prompt
  */
 public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
