@@ -1,5 +1,6 @@
 package com.adrain.llm_middleware.controller;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -209,6 +210,28 @@ public class PromptControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.prompt").value("How do i write unit tests for unit tests"))
       .andExpect(jsonPath("$.uuid").value("1234321"));
+  }
+
+/**
+ * Tests the {@code /api/prompt/{id}} get endpoint to ensure it deletes a {@link PromptRecord}
+ * related to provided {@link Prompt} id.
+ * <p>This test verifies the following:
+ * <ul>
+ *   <li>The endpoint returns an HTTP status code of 200 (OK).</li>
+ * </ul>
+ *
+ * <p>This test uses MockMvc to simulate an HTTP request to the endpoint and performs assertions
+ * on the response to ensure it meets the expected criteria.
+ *
+ * @throws Exception if an error occurs during the test execution, Specifically mapping to JSON using
+ * {@link ObjectMapper}.
+ */
+  @Test
+  @WithMockUser
+  public void testDeletePromptById() throws Exception {
+    doNothing().when(promptService).deletePromptById(1L);
+    mockMvc.perform(delete("/api/prompt/{id}", 1L))
+      .andExpect(status().isOk());
   }
 
 
