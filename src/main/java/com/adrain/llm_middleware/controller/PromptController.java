@@ -63,6 +63,16 @@ public class PromptController {
   }
 
   /**
+   * Handles requests to fetch all {@link Prompt} entities from database {@link User} email.
+   *
+   * @return a list of {@link PromptRecord} with HTTP status 200 (OK) upon successful creation
+   */
+  @GetMapping("/{email}")
+  public ResponseEntity<List<PromptRecord>> getAllPromptsByUserEmail(@PathVariable String email) {
+    return ResponseEntity.ok(promptService.getAllPromptsByUserEmail(email)); 
+  }
+
+  /**
    * Handles requests to fetch a {@link Prompt} by id.
    *
    * @return a {@link PromptRecord} with HTTP status 200 (OK) upon successful creation
