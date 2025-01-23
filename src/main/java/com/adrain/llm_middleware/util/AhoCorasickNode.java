@@ -5,7 +5,17 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * Represents a node in the {@link AhoCorasickTrie} automaton.
+ * This class extends {@link TrieNode} extending functionality specific to the
+ * AhoCorasick algorithm, such as failure links.
+ *
+ * <p>Each node contains a failure link ensuring efficient traversal of Trie with
+ * a constant time complexity of O(n)+L.</p>
+ *
+ * @see AhoCorasickTrie
+ * @see TrieNode
+ */
 @Getter
 @Setter
 public class AhoCorasickNode extends TrieNode {
