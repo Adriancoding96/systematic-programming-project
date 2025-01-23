@@ -67,7 +67,7 @@ public class PromptController {
    *
    * @return a list of {@link PromptRecord} with HTTP status 200 (OK) upon successful creation
    */
-  @GetMapping("/{email}")
+  @GetMapping("/email/{email}")
   public ResponseEntity<List<PromptRecord>> getAllPromptsByUserEmail(@PathVariable String email) {
     return ResponseEntity.ok(promptService.getAllPromptsByUserEmail(email)); 
   }
