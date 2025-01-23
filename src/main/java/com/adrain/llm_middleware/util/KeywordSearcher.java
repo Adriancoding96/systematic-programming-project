@@ -2,6 +2,8 @@ package com.adrain.llm_middleware.util;
 
 import java.util.List;
 
+import com.adrain.llm_middleware.api.OpenAiClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +15,17 @@ import org.springframework.stereotype.Component;
  *     for efficient keyword searching. The singleton instance can be retrieved
  *     via {@link #getInstance()}.
  * </p>
+ *
+ * @see AhoCorasickTrie
  */
 @Component
 public class KeywordSearcher {
 
   private static KeywordSearcher instance;
 
+  /**
+   * Hard coded keywords API is searching for in responses from {@link OpenAiClient}.
+   * */
   private final List<String> KEYWORDS = List.of(
       "java",
       "rust",
