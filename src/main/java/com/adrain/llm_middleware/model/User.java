@@ -15,14 +15,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
+/**
+ * Represents a user entity in the API.
+ * This class is mapped to a database table and contains details about a user,
+ * including their ID, name, email, password, and associated {@link Prompt}s
+ * and {@link Response}s.
+ *
+ * <p>The class uses Lombok annotations to automatically create
+ * getters, setters, constructors, and {@code toString}.</p>
+ *
+ * <p>The table name is explicitly set to "users" to avoid conflicts with reserved keywords
+ * in the Postgres database.</p>
+ * 
+ * @see Prompt
+ * @see Response
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@Table(name = "users") //Temporary while using h2-database
+@Table(name = "users")
 public class User {
   
   @Id
