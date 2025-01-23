@@ -13,6 +13,8 @@ import lombok.Setter;
  *     operations to insert multiple words, insert a single word, and search
  *     for a given word in the trie.
  * </p>
+ *
+ * @see TrieNode
  */
 @Getter
 @Setter
