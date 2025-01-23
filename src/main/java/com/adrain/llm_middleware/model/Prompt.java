@@ -20,6 +20,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents a prompt entity in the API.
+ * This class is mapped to a database table and contains details about a prompt,
+ * including its id, uuid, prompt text, {@link User}
+ * and {@link Response}.
+ *
+ * <p>The class uses Lombok annotations to automatically generate
+ * getters, setters, constructors, and {@code toString}.</p>
+ *
+ * <p>The uuid is automatically generated before persisting or updating the entity
+ * if it is not already set.</p>
+ *
+ * @see User
+ * @see Response
+ * @see PrePersist
+ * @see PreUpdate
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
