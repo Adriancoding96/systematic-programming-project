@@ -1,4 +1,4 @@
-package com.adrain.llm_middleware;
+package com.adrain.llm_middleware.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.List;
 
 import com.adrain.llm_middleware.enums.ResponseRating;
-import com.adrain.llm_middleware.mapper.ResponseMapper;
 import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.record.response.ResponseRecord;

@@ -1,4 +1,4 @@
-package com.adrain.llm_middleware;
+package com.adrain.llm_middleware.service;
 
 import com.adrain.llm_middleware.api.OpenAiClient;
 import com.adrain.llm_middleware.repository.PromptRepository;

@@ -1,4 +1,4 @@
-package com.adrain.llm_middleware;
+package com.adrain.llm_middleware.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.adrain.llm_middleware.util.AhoCorasickNode;
-import com.adrain.llm_middleware.util.AhoCorasickTrie;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

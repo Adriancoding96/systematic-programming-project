@@ -1,4 +1,4 @@
-package com.adrain.llm_middleware;
+package com.adrain.llm_middleware.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,8 +10,6 @@ import java.util.Optional;
 import com.adrain.llm_middleware.enums.ResponseRating;
 import com.adrain.llm_middleware.model.Response;
 import com.adrain.llm_middleware.model.User;
-import com.adrain.llm_middleware.repository.ResponseRepository;
-import com.adrain.llm_middleware.repository.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

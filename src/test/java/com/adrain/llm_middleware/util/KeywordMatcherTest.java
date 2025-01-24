@@ -1,4 +1,4 @@
-package com.adrain.llm_middleware;
+package com.adrain.llm_middleware.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.model.Prompt;
-import com.adrain.llm_middleware.util.KeywordMatcher;
-import com.adrain.llm_middleware.util.KeywordSearcher;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
