@@ -1,13 +1,26 @@
 package com.adrain.llm_middleware.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.record.prompt.PromptRequest;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@Profile("test")
+@ActiveProfiles("test")
 public class PromptMapperTest {
+
+  private PromptMapper mapper;
+
+  @BeforeEach
+  void setUp() {
+    this.mapper = new PromptMapper();
+  }
 
   /*
   @Test
@@ -28,9 +41,12 @@ public class PromptMapperTest {
   }*/
 
   @Test
-  @WithMockUser
   public void testToPromptFromRequest() {
-    
+    PromptRequest request = new PromptRequest("How do i center a div in html?", "deepseek-v3");
+    Prompt prompt = mapper.toPromptFromRequest(request);
+
+    assertNotNull(prompt);
+    assertEquals("How do i center a div in html?", prompt.getPrompt());
   }
   
 }
