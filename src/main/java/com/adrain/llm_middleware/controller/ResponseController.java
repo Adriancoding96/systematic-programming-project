@@ -52,11 +52,23 @@ public class ResponseController {
 
   /**
    * Retrieves all {@link Response} mapped as {@link ResponseRecord}
-   * associated with the current {@link User}.
+   * from the database.
    *
    * @return a {@link ResponseEntity} containing a list of {@link ResponseRecord} objects
    */
   @GetMapping
+  ResponseEntity<List<ResponseRecord>> getAllResponses() {
+    List<ResponseRecord> responses = service.getAllResponses();
+    return ResponseEntity.ok(responses);
+  }
+
+  /**
+   * Retrieves all {@link Response} mapped as {@link ResponseRecord}
+   * associated with the current {@link User}.
+   *
+   * @return a {@link ResponseEntity} containing a list of {@link ResponseRecord} objects
+   */
+  @GetMapping("/user")
   ResponseEntity<List<ResponseRecord>> getAllResponsesByUserId() {
     List<ResponseRecord> responses = service.getAllResponsesByUserEmail();
     return ResponseEntity.ok(responses);
