@@ -80,7 +80,10 @@ public class ResponseServiceImpl implements ResponseService {
    * @return A {@link List} of {@link ResponseRecord}.
    */
   public List<ResponseRecord> getAllResponses() {
-    return null;
+    return responseRepository.findAll()
+      .stream()
+      .map(responseMapper::toRecord)
+      .collect(Collectors.toList());
   }
 
   /**
