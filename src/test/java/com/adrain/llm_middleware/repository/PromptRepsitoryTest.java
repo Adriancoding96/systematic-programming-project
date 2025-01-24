@@ -1,10 +1,13 @@
 package com.adrain.llm_middleware.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.adrain.llm_middleware.exception.PromptNotFoundException;
 import com.adrain.llm_middleware.model.Prompt;
 import com.adrain.llm_middleware.model.User;
 
@@ -48,7 +51,25 @@ public class PromptRepsitoryTest {
       .collect(Collectors.toList());
 
       assertThat(prompts).hasSize(2);
+  }
 
+  @Test
+  public void testFindByUuid() {
+    String uuid = "wow-so-unique";
+
+    Prompt prompt = new Prompt();
+    prompt.setUuid(uuid);
+    prompt.setPrompt("How do i html?");
+    prompt.setUser(null);
+
+    promptRepository.save(prompt);
+    
+    Prompt fetchedPrompt = promptRepository.findByUuid(uuid)
+      .orElseThrow(() -> new PromptNotFoundException("Prompt not found in database with uuid: " + uuid));
+
+    assertNotNull(fetchedPrompt);
+    assertEquals("How do i html?", fetchedPrompt.getPrompt());
+    assertEquals(uuid, fetchedPrompt.getUuid());
   }
 
 }
