@@ -72,6 +72,18 @@ public class ResponseServiceImpl implements ResponseService {
   }
 
   /**
+   * Retrieves all {@link ResponseRecord} from database.
+   * <p>
+   *     Converts each {@link Response} entity to a {@link ResponseRecord}.
+   * </p>
+   *
+   * @return A {@link List} of {@link ResponseRecord}.
+   */
+  public List<ResponseRecord> getAllResponses() {
+    return null;
+  }
+
+  /**
    * Retrieves all {@link ResponseRecord} objects associated with the authenticated user.
    * <p>
    *     Fetches the users email from the authentication context and retrieves all corresponding responses from the database.
