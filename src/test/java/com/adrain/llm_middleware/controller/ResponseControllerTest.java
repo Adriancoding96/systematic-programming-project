@@ -226,4 +226,12 @@ public class ResponseControllerTest {
       .andExpect(jsonPath("$.metaData.size()").value(2));
   }
 
+  @Test
+  @WithMockUser
+  public void testDeleteResponseById() throws Exception {
+    doNothing().when(responseService).deleteResponseById(1L);
+    mockMvc.perform(delete("/api/response/{id}", 1L))
+      .andExpect(status().isOk());
+  }
+
 }
