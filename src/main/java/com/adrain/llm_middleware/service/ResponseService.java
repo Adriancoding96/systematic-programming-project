@@ -24,6 +24,13 @@ public interface ResponseService {
   void newResponse(ResponseRecord record);
 
   /**
+   * Retrieves all {@link Response}s from database.
+   *
+   * @return a list of {@link ResponseRecord}
+   */
+  List<ResponseRecord> getAllResponses();
+
+  /**
    * Retrieves all {@link Response}s associated with the current {@link User} email.
    *
    * @return a list of {@link ResponseRecord} objects associated with the current {@link User}
