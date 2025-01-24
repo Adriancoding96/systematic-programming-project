@@ -45,7 +45,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} with HTTP status 200 (OK) upon successful creation
    */
   @PostMapping("/new")
-  ResponseEntity<Void> newResponse(@RequestBody ResponseRecord record) {
+  public ResponseEntity<Void> newResponse(@RequestBody ResponseRecord record) {
     service.newResponse(record);
     return ResponseEntity.ok().build();
   }
@@ -57,7 +57,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} containing a list of {@link ResponseRecord} objects
    */
   @GetMapping
-  ResponseEntity<List<ResponseRecord>> getAllResponses() {
+  public ResponseEntity<List<ResponseRecord>> getAllResponses() {
     List<ResponseRecord> responses = service.getAllResponses();
     return ResponseEntity.ok(responses);
   }
@@ -69,7 +69,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} containing a list of {@link ResponseRecord} objects
    */
   @GetMapping("/user")
-  ResponseEntity<List<ResponseRecord>> getAllResponsesByUserId() {
+  public ResponseEntity<List<ResponseRecord>> getAllResponsesByUserId() {
     List<ResponseRecord> responses = service.getAllResponsesByUserEmail();
     return ResponseEntity.ok(responses);
   }
@@ -81,7 +81,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} containing a list of {@link ResponseRecord} objects matching the query
    */
   @GetMapping("/search")
-  ResponseEntity<List<ResponseRecord>> searchResponses(@RequestParam String query) {
+  public ResponseEntity<List<ResponseRecord>> searchResponses(@RequestParam String query) {
     List<ResponseRecord> responses = service.findResponsesByResponseBodyAndUserEmail(query);
     return ResponseEntity.ok(responses);
   }
@@ -93,7 +93,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} containing the {@link ResponseRecord} with the specified id
    */
   @GetMapping("/{id}")
-  ResponseEntity<ResponseRecord> getResponseById(@PathVariable Long id) {
+  public ResponseEntity<ResponseRecord> getResponseById(@PathVariable Long id) {
     ResponseRecord response = service.getResponseById(id);
     return ResponseEntity.ok(response);
   }
@@ -105,7 +105,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} with HTTP status 200 (OK) upon successful deletion
    */
   @DeleteMapping("/{id}")
-  ResponseEntity<Void> deleteResponseById(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteResponseById(@PathVariable Long id) {
     service.deleteResponseById(id);
     return ResponseEntity.ok().build();
   }
