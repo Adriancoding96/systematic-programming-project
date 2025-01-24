@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.record.prompt.PromptRecord;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,24 +23,6 @@ public class PromptMapperTest {
     this.mapper = new PromptMapper();
   }
 
-  /*
-  @Test
-  void testMapResponseToRecord() {
-    Response response = new Response();
-    response.setId(1L);
-    response.setPrompt(new Prompt());
-    response.setResponseBody("You use css and html LOL");
-    response.setMetaData(List.of("css", "html"));
-    response.setRating(ResponseRating.VERY_USEFUL);
-
-    ResponseRecord record = mapper.toRecord(response);
-
-    assertNotNull(record);
-    assertEquals("You use css and html LOL", record.responseBody());
-    assertEquals(List.of("css", "html"), record.metaData());
-    assertEquals(ResponseRating.VERY_USEFUL, record.rating());
-  }*/
-
   @Test
   public void testToPromptFromRequest() {
     PromptRequest request = new PromptRequest("How do i center a div in html?", "deepseek-v3");
@@ -47,6 +30,18 @@ public class PromptMapperTest {
 
     assertNotNull(prompt);
     assertEquals("How do i center a div in html?", prompt.getPrompt());
+  }
+
+  @Test
+  public void testToRecordFromPrompt() {
+    Prompt prompt = new Prompt();
+    prompt.setPrompt("How do i center a div in html?");
+    prompt.setUuid("123456");
+
+    PromptRecord record = mapper.toRecordFromPrompt(prompt);
+    assertNotNull(record);
+    assertEquals("How do i center a div in html?", record.prompt());
+    assertEquals("123456", record.uuid());
   }
   
 }
