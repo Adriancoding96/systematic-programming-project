@@ -110,4 +110,37 @@ public class ResponseServiceTest {
     assertEquals("This is the second response", result.get(1).responseBody());
     assertEquals("54321", result.get(1).promptUuid());
   }
+
+
+  @Test
+  public void testGetAllResponsesByUserEmail() {
+    String email = "adrian@example.com";
+    Response response1 = new Response();
+    response1.setResponseBody("This is the first response");
+    Response response2 = new Response();
+    response2.setResponseBody("This is the second response");
+
+    when(responseRepository.findAllByUserEmail(email)).thenReturn(List.of(response1, response2));
+    when(responseMapper.toRecord(response1)).thenReturn(new ResponseRecord(
+          "This is the first response",
+          List.of(),
+          ResponseRating.USEFUL,
+          "12345"));
+
+    when(responseMapper.toRecord(response2)).thenReturn(new ResponseRecord(
+          "This is the second response",
+          List.of(),
+          ResponseRating.USEFUL,
+          "54321"));
+
+    List<ResponseRecord> result = responseService.getAllResponsesByUserEmail();
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    assertEquals("This is the first response", result.get(0).responseBody());
+    assertEquals("12345", result.get(0).promptUuid());
+    assertEquals("This is the second response", result.get(1).responseBody());
+    assertEquals("54321", result.get(1).promptUuid());
+  }
+
 }
