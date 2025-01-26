@@ -143,4 +143,35 @@ public class ResponseServiceTest {
     assertEquals("54321", result.get(1).promptUuid());
   }
 
+  @Test
+  public void testGetAllResponsesByResponseBodyAndUserEmail() {
+    String responseBody = "Rust is a memory safe language";
+    String email = "adrian@example.com";
+    Response response1 = new Response();
+    response1.setResponseBody("Rust is a memory safe language to a extent");
+    Response response2 = new Response();
+    response2.setResponseBody("Rust is a memory safe language thanks to ownership");
+
+    when(responseRepository.searchByResponseBodyAndUserEmail(responseBody, email)).thenReturn(List.of(response1, response2));
+    when(responseMapper.toRecord(response1)).thenReturn(new ResponseRecord(
+          "Rust is a memory safe language to a extent",
+          List.of(),
+          ResponseRating.VERY_USEFUL,
+          "12345"));
+
+   when(responseMapper.toRecord(response2)).thenReturn(new ResponseRecord(
+          "Rust is a memory safe language thanks to ownership",
+          List.of(),
+          ResponseRating.USEFUL,
+          "54321"));
+
+    List<ResponseRecord> result = responseService.findResponsesByResponseBodyAndUserEmail(responseBody);
+
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    assertEquals("Rust is a memory safe language to a extent", result.get(0).responseBody());
+    assertEquals("12345", result.get(0).promptUuid());
+    assertEquals("Rust is a memory safe language thanks to ownership", result.get(1).responseBody());
+    assertEquals("54321", result.get(1).promptUuid());
+  }
 }
