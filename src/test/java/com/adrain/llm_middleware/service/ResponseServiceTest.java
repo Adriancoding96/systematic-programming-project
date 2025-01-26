@@ -2,6 +2,7 @@ package com.adrain.llm_middleware.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -210,5 +211,12 @@ public class ResponseServiceTest {
     assertNotNull(result);
     assertEquals(result.getResponseBody(), "Alternatives to C++ are Rust, Zig and Odin");
     assertEquals(result.getMetaData().size(), 4);
+  }
+
+  @Test
+  public void testDeleteResponseById() {
+    doNothing().when(responseRepository).deleteById(1L);
+    responseService.deleteResponseById(1L);
+    verify(responseRepository, times(1)).deleteById(1L);
   }
 }
