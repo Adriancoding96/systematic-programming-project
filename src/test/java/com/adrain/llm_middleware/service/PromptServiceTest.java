@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -149,6 +152,13 @@ class PromptServiceTest {
     assertNotNull(result);
     assertEquals("Hello this is a prompt", result.prompt());
     assertEquals("7890", result.uuid());
+  }
+
+  @Test
+  public void testDeletePromptById() {
+    doNothing().when(promptRepository).deleteById(1L);
+    promptService.deletePromptById(1L);
+    verify(promptRepository, times(1)).deleteById(1L);
   }
 
 }
