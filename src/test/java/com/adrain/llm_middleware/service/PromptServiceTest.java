@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.adrain.llm_middleware.api.OpenAiClient;
@@ -133,7 +134,21 @@ class PromptServiceTest {
     assertEquals("12345", result.get(0).uuid());
     assertEquals("How do i run unit tests faster?", result.get(1).prompt());
     assertEquals("54321", result.get(1).uuid());
+  }
 
+  @Test
+  public void testGetPromptById() {
+    Prompt prompt = new Prompt();
+    prompt.setPrompt("Hello this is a prompt");
+    prompt.setUuid("7890");
+
+    when(promptRepository.findById(1L)).thenReturn(Optional.of(prompt));
+    when(promptMapper.toRecordFromPrompt(prompt)).thenReturn(new PromptRecord("Hello this is a prompt", "7890"));
+
+    PromptRecord result = promptService.getPromptById(1L);
+    assertNotNull(result);
+    assertEquals("Hello this is a prompt", result.prompt());
+    assertEquals("7890", result.uuid());
   }
 
 }
