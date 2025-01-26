@@ -1,0 +1,81 @@
+package com.adrain.llm_middleware.service;
+
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+
+import com.adrain.llm_middleware.enums.ResponseRating;
+import com.adrain.llm_middleware.mapper.ResponseMapper;
+import com.adrain.llm_middleware.model.Prompt;
+import com.adrain.llm_middleware.model.Response;
+import com.adrain.llm_middleware.model.User;
+import com.adrain.llm_middleware.record.response.ResponseRecord;
+import com.adrain.llm_middleware.repository.ResponseRepository;
+import com.adrain.llm_middleware.security.AuthenticationFacade;
+import com.adrain.llm_middleware.service.impl.ResponseServiceImpl;
+import com.adrain.llm_middleware.util.PromptResponseLinker;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+@ExtendWith(MockitoExtension.class)
+public class ResponseServiceTest {
+
+  @Mock
+  private ResponseRepository responseRepository;
+  @Mock
+  private ResponseMapper responseMapper;
+  @Mock
+  private AuthenticationFacade authenticationFacade;
+  @Mock
+  private UserService userService;
+  @Mock
+  private PromptResponseLinker promptResponseLinker;
+
+  @InjectMocks
+  private ResponseServiceImpl responseService;
+
+  @BeforeEach
+  void setupSecurityContext() {
+    lenient().when(authenticationFacade.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("adrian@example.com", null));
+  }
+
+  @Test
+  public void testNewResponse() {
+    ResponseRecord record = new ResponseRecord(
+        "Java23 is the latest stable jdk release",
+        List.of("Java23", "jdk"),
+        ResponseRating.VERY_USEFUL,
+        "12345");
+
+    User user = new User();
+    user.setName("Adrian");
+    user.setEmail("adrian@examle.com");
+    user.setPassword("verysecure123");
+
+    Prompt prompt = new Prompt();
+    prompt.setPrompt("What is the latest jdk release");
+    prompt.setUuid("12345");
+
+    Response response = new Response();
+    response.setResponseBody("Java23 is the latest stable jdk release");
+    response.setUser(user);
+    response.setPrompt(prompt);
+
+    when(userService.getUserBySecurityContext()).thenReturn(user);
+    when(promptResponseLinker.getPromptByUuid("12345")).thenReturn(prompt);
+    when(responseMapper.toResponse(record)).thenReturn(response);
+    when(responseRepository.save(response)).thenReturn(response);
+
+    responseService.newResponse(record);
+    verify(responseRepository, times(1)).save(response);
+  }
+}
