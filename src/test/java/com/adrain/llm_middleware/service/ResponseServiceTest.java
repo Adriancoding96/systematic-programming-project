@@ -196,4 +196,19 @@ public class ResponseServiceTest {
     assertEquals(result.metaData().size(), 4);
     assertEquals(result.promptUuid(), "12345");
   }
+
+  @Test
+  public void testGetResponseByPromptId() {
+    Response response = new Response();
+    response.setResponseBody("Alternatives to C++ are Rust, Zig and Odin");
+    response.setMetaData(List.of("C++", "Rust", "Zig", "Odin"));
+    response.setRating(ResponseRating.VERY_USEFUL);
+
+    when(responseRepository.findByPromptId(1L)).thenReturn(Optional.of(response));
+
+    Response result = responseService.getResponseByPromptId(1L);
+    assertNotNull(result);
+    assertEquals(result.getResponseBody(), "Alternatives to C++ are Rust, Zig and Odin");
+    assertEquals(result.getMetaData().size(), 4);
+  }
 }
