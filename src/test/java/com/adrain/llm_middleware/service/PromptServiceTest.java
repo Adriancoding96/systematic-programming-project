@@ -111,4 +111,29 @@ class PromptServiceTest {
 
   }
 
+  @Test
+  public void testGetAllPromptsByUserEmail() {
+    String email = "adrian@example.com";
+    Prompt prompt1 = new Prompt();
+    prompt1.setPrompt("How do i write unit tests faster?");
+    prompt1.setUuid("12345");
+
+    Prompt prompt2 = new Prompt();
+    prompt2.setPrompt("How do i run unit tests faster?");
+    prompt1.setUuid("54321");
+
+    when(promptRepository.findAllByUserEmail(email)).thenReturn(Stream.of(prompt1, prompt2));
+    when(promptMapper.toRecordFromPrompt(prompt1)).thenReturn(new PromptRecord("How do i write unit tests faster?", "12345"));
+    when(promptMapper.toRecordFromPrompt(prompt2)).thenReturn(new PromptRecord("How do i run unit tests faster?", "54321"));
+
+    List<PromptRecord> result = promptService.getAllPromptsByUserEmail(email);
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    assertEquals("How do i write unit tests faster?", result.get(0).prompt());
+    assertEquals("12345", result.get(0).uuid());
+    assertEquals("How do i run unit tests faster?", result.get(1).prompt());
+    assertEquals("54321", result.get(1).uuid());
+
+  }
+
 }
