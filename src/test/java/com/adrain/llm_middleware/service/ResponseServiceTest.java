@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.adrain.llm_middleware.enums.ResponseRating;
 import com.adrain.llm_middleware.mapper.ResponseMapper;
@@ -173,5 +174,26 @@ public class ResponseServiceTest {
     assertEquals("12345", result.get(0).promptUuid());
     assertEquals("Rust is a memory safe language thanks to ownership", result.get(1).responseBody());
     assertEquals("54321", result.get(1).promptUuid());
+  }
+
+  @Test
+  public void testGetResponseById() {
+    Response response = new Response();
+    response.setResponseBody("Alternatives to C++ are Rust, Zig and Odin");
+    response.setMetaData(List.of("C++", "Rust", "Zig", "Odin"));
+    response.setRating(ResponseRating.VERY_USEFUL);
+
+    when(responseRepository.findById(1L)).thenReturn(Optional.of(response));
+    when(responseMapper.toRecord(response)).thenReturn(new ResponseRecord(
+          "Alternatives to C++ are Rust, Zig and Odin",
+          List.of("C++", "Rust", "Zig", "Odin"),
+          ResponseRating.VERY_USEFUL,
+          "12345"));
+
+    ResponseRecord result = responseService.getResponseById(1L);
+    assertNotNull(result);
+    assertEquals(result.responseBody(), "Alternatives to C++ are Rust, Zig and Odin");
+    assertEquals(result.metaData().size(), 4);
+    assertEquals(result.promptUuid(), "12345");
   }
 }
