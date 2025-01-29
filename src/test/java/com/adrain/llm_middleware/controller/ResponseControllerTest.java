@@ -30,6 +30,47 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * Unit tests for the {@link ResponseController} class.
+ *
+ * <p>This test class defines unit tests for verifying the functionality of the endpoints in
+ * {@link ResponseController}. It uses {@link MockMvc} to simulate HTTP requests and validate
+ * responses, ensuring that the controller interacts correctly with the {@link ResponseService}.</p>
+ *
+ * <p>The tests cover the following endpoints:
+ * <ul>
+ *   <li>{@code POST /api/response/new} – Tests creating a new {@link ResponseRecord}.</li>
+ *   <li>{@code GET /api/response} – Tests fetching all {@link ResponseRecord}s.</li>
+ *   <li>{@code GET /api/response/user} – Tests fetching {@link ResponseRecord}s by user email.</li>
+ *   <li>{@code GET /api/response/search} – Tests searching {@link ResponseRecord}s by a given query.</li>
+ *   <li>{@code GET /api/response/{id}} – Tests fetching a {@link ResponseRecord} by its id.</li>
+ *   <li>{@code DELETE /api/response/{id}} – Tests deleting a {@link ResponseRecord} by its id.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Each test method is annotated with {@link WithMockUser} to simulate an authenticated user.
+ * The {@link MockMvc} instance is configured to include CSRF tokens in all requests to
+ * ensure compatibility with Spring Security.</p>
+ *
+ * <p>This class uses the following key components:
+ * <ul>
+ *   <li>{@link MockMvc} – To simulate HTTP requests and validate responses.</li>
+ *   <li>{@link MockBean} – To mock the {@link ResponseService} and isolate the controller
+ *       from external dependencies.</li>
+ *   <li>{@link ObjectMapper} – To serialize and deserialize JSON.</li>
+ *   <li>{@link WebApplicationContext} – To configure the Spring application context for testing.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>All tests are executed with the {@code test} profile active, ensuring that the application
+ * configuration is tailored for testing purposes.</p>
+ *
+ * @see ResponseController
+ * @see ResponseService
+ * @see ResponseRecord
+ * @see WithMockUser
+ * @see MockMvc
+ */
 @WebMvcTest(ResponseController.class)
 @ActiveProfiles("test")
 public class ResponseControllerTest {
@@ -58,6 +99,20 @@ public class ResponseControllerTest {
         .build();
   }
 
+  /**
+   * Tests the {@code POST /api/response/new} endpoint to ensure it processes a new
+   * {@link ResponseRecord} and delegates correctly to {@link ResponseService#newResponse(ResponseRecord)}.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>A valid {@link ResponseRecord} can be passed to the endpoint without error.</li>
+   *   <li>The {@code responseService.newResponse(...)} method is invoked with the correct data.</li>
+   *   <li>The endpoint returns a proper HTTP status code (e.g., 2xx) indicating success.</li>
+   * </ul>
+   * </p>
+   *
+   * @throws Exception if any error occurs during request construction or execution.
+   */
   @Test
   @WithMockUser
   public void testNewResponse() throws Exception {
@@ -70,6 +125,21 @@ public class ResponseControllerTest {
     mockMvc.perform(post("/api/response/new"));
   }
 
+  /**
+   * Tests the {@code GET /api/response} endpoint to ensure it fetches a
+   * {@link List} of {@link ResponseRecord}s.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>An HTTP 200 (OK) status is returned.</li>
+   *   <li>The response contains the expected number of {@link ResponseRecord}s.</li>
+   *   <li>The fields in each record match the expected values for {@code responseBody},
+   *       {@code metaData}, {@code rating}, and {@code promptUuid}.</li>
+   * </ul>
+   * </p>
+   *
+   * @throws Exception if any error occurs during request construction or execution.
+   */
   @Test
   @WithMockUser
   public void testGetAllResponses() throws Exception {
@@ -110,6 +180,20 @@ public class ResponseControllerTest {
 
   }
 
+  /**
+   * Tests the {@code GET /api/response/user} endpoint to ensure it fetches
+   * all {@link ResponseRecord}s associated with the currently authenticated user
+   * (via their email).
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>An HTTP 200 (OK) status is returned.</li>
+   *   <li>The response matches the expected {@link ResponseRecord} list for the user's email.</li>
+   * </ul>
+   * </p>
+   *
+   * @throws Exception if any error occurs during request construction or execution.
+   */
   @Test
   @WithMockUser
   public void testGetAllResponsesByUserEmail() throws Exception {
@@ -210,6 +294,21 @@ public class ResponseControllerTest {
     verify(responseService).findResponsesByResponseBodyAndUserEmail(query4);
   }
 
+  /**
+   * Tests the {@code GET /api/response/search} endpoint to ensure it returns
+   * {@link ResponseRecord}s that match the given query string.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>An HTTP 200 (OK) status is returned for each search request.</li>
+   *   <li>The response includes only the records that match the query in {@code responseBody}.</li>
+   *   <li>The correct service method, {@link ResponseService#findResponsesByResponseBodyAndUserEmail(String)},
+   *       is invoked for each query.</li>
+   * </ul>
+   * </p>
+   *
+   * @throws Exception if any error occurs during request construction or execution.
+   */
   @Test
   @WithMockUser
   public void testGetResponseById() throws Exception {
@@ -226,6 +325,20 @@ public class ResponseControllerTest {
       .andExpect(jsonPath("$.metaData.size()").value(2));
   }
 
+  /**
+   * Tests the {@code GET /api/response/{id}} endpoint to ensure it fetches the
+   * {@link ResponseRecord} with the specified ID.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>An HTTP 200 (OK) status is returned.</li>
+   *   <li>The response matches the expected {@link ResponseRecord}, including fields for
+   *       {@code responseBody}, {@code metaData}, {@code rating}, and {@code promptUuid}.</li>
+   * </ul>
+   * </p>
+   *
+   * @throws Exception if any error occurs during request construction or execution.
+   */
   @Test
   @WithMockUser
   public void testDeleteResponseById() throws Exception {
