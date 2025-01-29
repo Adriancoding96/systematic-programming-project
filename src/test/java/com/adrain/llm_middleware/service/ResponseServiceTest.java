@@ -30,6 +30,52 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+/**
+ * Unit tests for the {@link ResponseServiceImpl} class.
+ *
+ * <p>This test class uses the {@link MockitoExtension} to create mock instances of
+ * dependencies required by {@link ResponseServiceImpl}, isolating the service from
+ * external components such as the {@link ResponseRepository}, {@link ResponseMapper},
+ * and {@link UserService}. The goal is to verify the business logic and interactions
+ * with these dependencies in a controlled (mocked) environment.</p>
+ *
+ * <p>The following mocks are used:
+ * <ul>
+ *   <li>{@link ResponseRepository} – Database access for {@link Response} entities.</li>
+ *   <li>{@link ResponseMapper} – Converts between {@link Response} domain objects and
+ *       {@link ResponseRecord} DTOs.</li>
+ *   <li>{@link AuthenticationFacade} – Provides authentication details for the
+ *       currently logged-in user.</li>
+ *   <li>{@link UserService} – Retrieves user details from the security context.</li>
+ *   <li>{@link PromptResponseLinker} – Fetches prompt details and links them with responses.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Tests in this class include:
+ * <ul>
+ *   <li>{@link #testNewResponse()} – Ensures a new {@link Response} is saved correctly when
+ *       created from a {@link ResponseRecord}.</li>
+ *   <li>{@link #testGetAllResponses()} – Ensures all stored responses are retrieved and
+ *       mapped to {@link ResponseRecord} objects.</li>
+ *   <li>{@link #testGetAllResponsesByUserEmail()} – Ensures that responses filtered by
+ *       the authenticated user's email are retrieved correctly.</li>
+ *   <li>{@link #testGetAllResponsesByResponseBodyAndUserEmail()} – Ensures that
+ *       responses can be searched by a partial {@code responseBody} string and user email.</li>
+ *   <li>{@link #testGetResponseById()} – Ensures a response is correctly retrieved
+ *       by its ID and mapped to a {@link ResponseRecord}.</li>
+ *   <li>{@link #testGetResponseByPromptId()} – Ensures a response is correctly retrieved
+ *       by the related prompt ID.</li>
+ *   <li>{@link #testDeleteResponseById()} – Ensures a response is properly deleted by
+ *       its ID.</li>
+ * </ul>
+ * </p>
+ *
+ * @see ResponseService
+ * @see ResponseServiceImpl
+ * @see ResponseRepository
+ * @see ResponseMapper
+ * @see MockitoExtension
+ */
 @ExtendWith(MockitoExtension.class)
 public class ResponseServiceTest {
 
@@ -52,6 +98,19 @@ public class ResponseServiceTest {
     lenient().when(authenticationFacade.getAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("adrian@example.com", null));
   }
 
+  /**
+   * Tests {@link ResponseServiceImpl#newResponse(ResponseRecord)} to ensure a new
+   * {@link Response} is created and saved correctly using data from a {@link ResponseRecord}.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The current user is fetched from {@link UserService#getUserBySecurityContext()}.</li>
+   *   <li>The related {@link Prompt} is retrieved by UUID via {@link PromptResponseLinker}.</li>
+   *   <li>The {@link Response} is correctly mapped from the provided {@link ResponseRecord}
+   *       and saved to the repository.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testNewResponse() {
     ResponseRecord record = new ResponseRecord(
@@ -83,6 +142,19 @@ public class ResponseServiceTest {
     verify(responseRepository, times(1)).save(response);
   }
 
+  /**
+   * Tests {@link ResponseServiceImpl#getAllResponses()} to ensure it retrieves all
+   * stored {@link Response} entities and maps them correctly to {@link ResponseRecord}
+   * objects.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The repository returns the expected list of {@link Response} entities.</li>
+   *   <li>Each {@link Response} is mapped to a corresponding {@link ResponseRecord}
+   *       with the correct fields.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetAllResponses() {
     Response response1 = new Response();
@@ -113,7 +185,18 @@ public class ResponseServiceTest {
     assertEquals("54321", result.get(1).promptUuid());
   }
 
-
+  /**
+   * Tests {@link ResponseServiceImpl#getAllResponsesByUserEmail()} to ensure it fetches
+   * all {@link Response} entities for the currently authenticated user, mapped to
+   * {@link ResponseRecord} objects.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The repository returns the expected list of {@link Response} entities filtered by user email.</li>
+   *   <li>Each {@link Response} is mapped correctly to a {@link ResponseRecord}.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetAllResponsesByUserEmail() {
     String email = "adrian@example.com";
@@ -145,6 +228,19 @@ public class ResponseServiceTest {
     assertEquals("54321", result.get(1).promptUuid());
   }
 
+  /**
+   * Tests {@link ResponseServiceImpl#findResponsesByResponseBodyAndUserEmail(String)} to
+   * ensure it fetches all {@link Response} entities matching a given substring in the
+   * {@code responseBody}, filtered by the authenticated user's email, and maps them to
+   * {@link ResponseRecord} objects.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The repository returns the expected list of {@link Response} entities based on the search query.</li>
+   *   <li>Each {@link Response} is mapped correctly to a {@link ResponseRecord}.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetAllResponsesByResponseBodyAndUserEmail() {
     String responseBody = "Rust is a memory safe language";
@@ -177,6 +273,18 @@ public class ResponseServiceTest {
     assertEquals("54321", result.get(1).promptUuid());
   }
 
+  /**
+   * Tests {@link ResponseServiceImpl#getResponseById(Long)} to ensure that a
+   * {@link Response} is retrieved by its ID and mapped correctly to a
+   * {@link ResponseRecord}.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The repository returns the expected {@link Response} entity for the given ID.</li>
+   *   <li>The returned {@link Response} is mapped correctly to a {@link ResponseRecord}.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetResponseById() {
     Response response = new Response();
@@ -198,6 +306,17 @@ public class ResponseServiceTest {
     assertEquals(result.promptUuid(), "12345");
   }
 
+  /**
+   * Tests {@link ResponseServiceImpl#getResponseByPromptId(Long)} to ensure that
+   * a {@link Response} is retrieved by its associated prompt ID.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The repository returns the expected {@link Response} entity for the given prompt ID.</li>
+   *   <li>The returned {@link Response} object has the expected fields.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetResponseByPromptId() {
     Response response = new Response();
@@ -213,6 +332,17 @@ public class ResponseServiceTest {
     assertEquals(result.getMetaData().size(), 4);
   }
 
+  /**
+   * Tests {@link ResponseServiceImpl#deleteResponseById(Long)} to ensure that
+   * a {@link Response} is properly deleted from the repository by its ID.
+   *
+   * <p>This test verifies:
+   * <ul>
+   *   <li>The {@link ResponseRepository#deleteById(Long)} method is called once
+   *       with the correct ID.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testDeleteResponseById() {
     doNothing().when(responseRepository).deleteById(1L);
