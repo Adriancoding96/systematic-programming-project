@@ -55,7 +55,7 @@ public class Prompt {
   private String prompt;
 
   @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "prompt_id")
+  @JoinColumn(name = "user_id")
   private User user;
  
   @OneToOne(mappedBy = "prompt")
