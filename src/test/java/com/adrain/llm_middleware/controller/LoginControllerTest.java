@@ -32,6 +32,47 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * Unit tests for the {@link LoginController} class.
+ *
+ * <p>This test class defines unit tests for verifying the functionality of
+ * the {@code /login} endpoint exposed by {@link LoginController}. It uses
+ * {@link MockMvc} to simulate HTTP requests and validate responses, ensuring
+ * that the controller interacts correctly with the Spring Security
+ * authentication infrastructure.</p>
+ *
+ * <p>The tests in this class cover the following:
+ * <ul>
+ *   <li>{@code POST /login} – Tests user login functionality by providing valid
+ *       {@link LoginRequest} credentials.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>The {@link MockMvc} instance is configured to include CSRF tokens in all
+ * requests to ensure compatibility with Spring Security.</p>
+ *
+ * <p>This class uses the following key components:
+ * <ul>
+ *   <li>{@link MockMvc} – To simulate HTTP requests and validate responses.</li>
+ *   <li>{@link MockBean} – To mock the {@link AuthenticationManager} and isolate
+ *       the controller from external dependencies.</li>
+ *   <li>{@link ObjectMapper} – To serialize and deserialize JSON.</li>
+ *   <li>{@link WebApplicationContext} – To configure the Spring application context
+ *       for testing.</li>
+ *   <li>{@link JwtHelper} – To generate JWT tokens for authentication testing.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>All tests are executed with the {@code test} profile active, ensuring that the
+ * application configuration is tailored for testing purposes.</p>
+ *
+ * @see LoginController
+ * @see LoginRequest
+ * @see AuthenticationManager
+ * @see JwtHelper
+ * @see MockMvc
+ * @see SpringExtension
+ */
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(LoginController.class)
 @ActiveProfiles("test")
@@ -60,6 +101,28 @@ public class LoginControllerTest {
       .build();
   } 
 
+  /**
+   * Tests the {@code POST /login} endpoint to ensure it processes a valid
+   * {@link LoginRequest} and triggers a successful authentication process.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>Calling the {@link AuthenticationManager} with the correct
+   *       {@link UsernamePasswordAuthenticationToken}.</li>
+   *   <li>Generating a JWT token via {@link JwtHelper#generateToken(String)}
+   *       when the authentication is successful.</li>
+   *   <li>Ensuring that the response status and any relevant headers or
+   *       returned content match the expected outcome.</li>
+   * </ul>
+   * </p>
+   *
+   * <p>This test uses {@link MockMvc} to simulate an HTTP request to the
+   * {@code /login} endpoint and performs assertions on the response to ensure
+   * it meets the expected criteria.</p>
+   *
+   * @throws Exception if an error occurs during the test execution, specifically
+   *         when mapping to/from JSON with {@link ObjectMapper}.
+   */
   //TODO figure out why this test is redirectig to login/error
   @Test
   public void testLogin() throws Exception{
