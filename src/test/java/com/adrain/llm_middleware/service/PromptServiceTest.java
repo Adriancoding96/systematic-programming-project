@@ -35,6 +35,53 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * Unit tests for the {@link PromptServiceImpl} class.
+ *
+ * <p>This test class uses the {@link MockitoExtension} to create mock instances of
+ * the dependencies required by {@link PromptServiceImpl}, isolating the service
+ * from external components such as {@link PromptRepository}, {@link OpenAiClient},
+ * and {@link UserService}. The goal is to verify the business logic and interactions
+ * with these dependencies in a controlled (mocked) environment.</p>
+ *
+ * <p>The following key components are mocked in this test:
+ * <ul>
+ *   <li>{@link PromptRepository} – Data access layer for {@link Prompt} entities.</li>
+ *   <li>{@link OpenAiClient} – External client for OpenAI-related operations.</li>
+ *   <li>{@link KeywordSearcher} and {@link KeywordMatcher} – For text analysis and similarity checks.</li>
+ *   <li>{@link PromptMapper} – For converting between {@link Prompt} entities, DTOs, and records.</li>
+ *   <li>{@link UserService} – For retrieving the current authenticated user and user details.</li>
+ *   <li>{@link ResponseService} – For retrieving responses linked to existing prompts.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>The tests cover these scenarios:
+ * <ul>
+ *   <li>{@link #testNewPrompt_whenSimilarPromptExistsInDatabase()} – Verifies that existing prompts
+ *       are handled correctly when creating a new {@link Prompt}, and that a response is retrieved
+ *       if a similar prompt already exists.</li>
+ *   <li>{@link #testGetAllPrompts()} – Ensures all prompts in the repository are returned and properly
+ *       mapped to {@link PromptRecord} objects.</li>
+ *   <li>{@link #testGetAllPromptsByUserEmail()} – Ensures only prompts associated with a specific
+ *       user email are returned.</li>
+ *   <li>{@link #testGetPromptById()} – Ensures a prompt can be retrieved by its ID and mapped to
+ *       a corresponding {@link PromptRecord}.</li>
+ *   <li>{@link #testDeletePromptById()} – Ensures a prompt is properly deleted by its ID.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>This class also sets up a mock {@link SecurityContextHolder} to simulate the
+ * authenticated user's context, ensuring methods that depend on user information
+ * work as expected.</p>
+ *
+ * @see PromptService
+ * @see PromptServiceImpl
+ * @see PromptRepository
+ * @see PromptMapper
+ * @see UserService
+ * @see ResponseService
+ * @see MockitoExtension
+ */
 @ExtendWith(MockitoExtension.class)
 class PromptServiceTest {
 
@@ -63,6 +110,21 @@ class PromptServiceTest {
     SecurityContextHolder.getContext().setAuthentication(auth);
   }
 
+  /**
+   * Tests that when a prompt similar to the one requested already exists in the database,
+   * {@link PromptServiceImpl#newPrompt(PromptRequest)} returns an appropriate
+   * {@link PromptResponse} containing existing data instead of creating a duplicate record.
+   *
+   * <p>This test does the following:
+   * <ul>
+   *   <li>Mocks {@link UserService#getUserBySecurityContext()} to retrieve a {@link User}.</li>
+   *   <li>Mocks the {@link PromptMapper} and {@link PromptRepository} to simulate
+   *       existing prompt data for the authenticated user.</li>
+   *   <li>Mocks the {@link ResponseService} to return a stored {@link Response}
+   *       associated with the existing prompt.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testNewPrompt_whenSimilarPromptExistsInDatabase() {
     PromptRequest request = new PromptRequest("How do i not cause stack overflow???", "gpt-3.5-turbo");
@@ -91,6 +153,18 @@ class PromptServiceTest {
     assertNotNull(result, "Expected non-null result from newPrompt");
   }
 
+  /**
+   * Tests {@link PromptServiceImpl#getAllPrompts()} to ensure that all stored prompts
+   * are returned and mapped correctly to {@link PromptRecord} objects.
+   *
+   * <p>This test does the following:
+   * <ul>
+   *   <li>Mocks {@link PromptRepository#findAll()} to return a list of prompts.</li>
+   *   <li>Verifies that each {@link Prompt} is mapped to a {@link PromptRecord} using
+   *       {@link PromptMapper#toRecordFromPrompt(Prompt)}.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetAllPrompts() {
     Prompt prompt1 = new Prompt();
@@ -115,6 +189,19 @@ class PromptServiceTest {
 
   }
 
+  /**
+   * Tests {@link PromptServiceImpl#getAllPromptsByUserEmail(String)} to ensure that
+   * only prompts associated with a specific user email are returned.
+   *
+   * <p>This test does the following:
+   * <ul>
+   *   <li>Mocks {@link PromptRepository#findAllByUserEmail(String)} to return a stream of
+   *       prompts belonging to the given email.</li>
+   *   <li>Verifies that the returned list of {@link PromptRecord} objects is correctly
+   *       mapped and matches the expected size.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetAllPromptsByUserEmail() {
     String email = "adrian@example.com";
@@ -139,6 +226,18 @@ class PromptServiceTest {
     assertEquals("54321", result.get(1).uuid());
   }
 
+
+  /**
+   * Tests {@link PromptServiceImpl#getPromptById(Long)} to ensure a prompt
+   * can be retrieved by its identifier and mapped correctly to a {@link PromptRecord}.
+   *
+   * <p>This test does the following:
+   * <ul>
+   *   <li>Mocks {@link PromptRepository#findById(Long)} to return an existing prompt.</li>
+   *   <li>Verifies the prompt is mapped to the expected {@link PromptRecord} fields.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testGetPromptById() {
     Prompt prompt = new Prompt();
@@ -154,6 +253,17 @@ class PromptServiceTest {
     assertEquals("7890", result.uuid());
   }
 
+  /**
+   * Tests {@link PromptServiceImpl#deletePromptById(Long)} to ensure that a prompt
+   * is properly deleted from the repository by its ID.
+   *
+   * <p>This test does the following:
+   * <ul>
+   *   <li>Mocks {@link PromptRepository#deleteById(Long)} with no errors thrown.</li>
+   *   <li>Verifies that the method is indeed called once with the correct ID.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testDeletePromptById() {
     doNothing().when(promptRepository).deleteById(1L);
