@@ -12,6 +12,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+/**
+ * Unit tests for the {@link PromptMapper} class.
+ *
+ * <p>This test class verifies the functionality of the {@link PromptMapper}, which is responsible
+ * for converting between domain objects such as {@link Prompt} and DTOs like {@link PromptRequest}
+ * and {@link PromptRecord}.</p>
+ *
+ * <p>It uses the Spring testing framework and runs with the {@code test} profile active,
+ * ensuring the application configuration is suited for testing scenarios.</p>
+ *
+ * <p>The tests in this class cover:
+ * <ul>
+ *   <li>{@link #testToPromptFromRequest()} – Ensures that a {@link PromptRequest} is properly
+ *       mapped to a {@link Prompt} domain object.</li>
+ *   <li>{@link #testToRecordFromPrompt()} – Ensures that a {@link Prompt} domain object is
+ *       properly mapped to a {@link PromptRecord}.</li>
+ * </ul>
+ * </p>
+ *
+ * @see PromptMapper
+ * @see Prompt
+ * @see PromptRequest
+ * @see PromptRecord
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 public class PromptMapperTest {
@@ -23,6 +47,17 @@ public class PromptMapperTest {
     this.mapper = new PromptMapper();
   }
 
+  /**
+   * Tests {@link PromptMapper#toPromptFromRequest(PromptRequest)} to ensure that a valid
+   * {@link PromptRequest} is correctly mapped to a {@link Prompt} entity.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>The {@link Prompt} object is not {@code null} after mapping.</li>
+   *   <li>The {@code prompt} field matches the value in the {@link PromptRequest}.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testToPromptFromRequest() {
     PromptRequest request = new PromptRequest("How do i center a div in html?", "deepseek-v3");
@@ -32,6 +67,17 @@ public class PromptMapperTest {
     assertEquals("How do i center a div in html?", prompt.getPrompt());
   }
 
+  /**
+   * Tests {@link PromptMapper#toRecordFromPrompt(Prompt)} to ensure that a valid
+   * {@link Prompt} entity is correctly mapped to a {@link PromptRecord}.
+   *
+   * <p>This test verifies the following:
+   * <ul>
+   *   <li>The {@link PromptRecord} object is not {@code null} after mapping.</li>
+   *   <li>The {@code prompt} and {@code uuid} fields match the values from the {@link Prompt}.</li>
+   * </ul>
+   * </p>
+   */
   @Test
   public void testToRecordFromPrompt() {
     Prompt prompt = new Prompt();
