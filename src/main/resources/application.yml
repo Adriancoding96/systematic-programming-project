@@ -9,5 +9,6 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
+      default_schema: public
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
