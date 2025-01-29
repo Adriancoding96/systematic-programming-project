@@ -89,7 +89,7 @@ public class PromptServiceImpl implements PromptService {
     Prompt prompt = promptMapper.toPromptFromRequest(request);
     Prompt existingPrompt = getPromptWithHighSimilarityScoreIfExistsInDatabase(prompt);
     if(existingPrompt != null){
-      Response response = responseService.getResponseByPromptId(null);
+      Response response = responseService.getResponseByPromptId(existingPrompt.getId());
       return new PromptResponse(response.getResponseBody(), response.getMetaData(), prompt.getUuid());
     } else {
       Prompt savedPrompt = savePrompt(request);
