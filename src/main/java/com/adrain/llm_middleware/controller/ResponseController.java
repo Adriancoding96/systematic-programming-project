@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,6 +98,21 @@ public class ResponseController {
     ResponseRecord response = service.getResponseById(id);
     return ResponseEntity.ok(response);
   }
+
+  /**
+   * Updates a @link {@link Respone} by its unique identifier and {@link ResponseRecord}.
+   *
+   * @param id the primary key of the response row
+   * @param record the dto containing update data
+   * @return a {@link ResponseEntity} containing the {@link ResponseRecord} with the specified id
+   */
+  @PutMapping("/{id}")
+  public ResponseEntity<Void> updateResponse(@PathVariable Long id, @RequestBody ResponseRecord record) {
+    service.updateResponse(id, record);
+    return ResponseEntity.ok().build();
+  }
+
+
 
   /**
    * Deletes a @link {@link Respone} by its unique identifier.
