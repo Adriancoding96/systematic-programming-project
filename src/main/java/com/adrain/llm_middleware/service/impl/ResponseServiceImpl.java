@@ -158,6 +158,44 @@ public class ResponseServiceImpl implements ResponseService {
   }
 
   /**
+   * Retrieves a {@link Response} by its id.
+   * <p>
+   *     Fetches a {@link Response} entity from the database using its id.
+   *     Throws a {@link ResponseNotFoundException} if the entity is not found.
+   *     Asserts {@link Response} fetched from database belongs to authenticated {@link User}.
+   * </p>
+   *
+   * @param id The if of the {@link Response}.
+   * @param record The dto containing data to update {@link Response}.
+   * @throws ResponseNotFoundException if no {@link Response} associated with the given {@link Prompt} id is found.
+   * @throws RuntimeException if no {@link Response} does not belong to authenticated user.
+   */
+  @Override
+  public void updateResponse(Long id, ResponseRecord record) {
+    Response response = responseRepository.findById(id)
+      .orElseThrow(() -> new ResponseNotFoundException("Could not find response with id: " + id));
+    String authenticatedUserEmail = authenticationFacade.getAuthentication().getName();
+    if(!response.getUser().getEmail().equals(authenticatedUserEmail)) {
+      throw new RuntimeException("Not authorized to update this response"); //TODO implement UnauthorizedException
+    }
+    updateResponseAttributes(response, record);
+    responseRepository.save(response);
+  }
+
+  /**
+   * Helper method to set attributes of {@link Response} from {@link ResponseRecord}.
+   *
+   * @param response The existing {@link Response} fetched from database.
+   * @param record The dto containing update data.
+   *
+   * */
+  private void updateResponseAttributes(Response response, ResponseRecord record) {
+    response.setResponseBody(record.responseBody());
+    response.setRating(record.rating());
+    response.setMetaData(record.metaData());
+  }
+
+  /**
    * Deletes a {@link Response} entity from the database by its id.
    * <p>
    *     Removes the {@link Response} entity with the specified id from the database.
