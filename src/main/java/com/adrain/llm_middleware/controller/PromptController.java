@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -69,7 +70,7 @@ public class PromptController {
    * @return a list of {@link PromptRecord} with HTTP status 200 (OK) upon successful creation
    */
   @GetMapping("/email/{email}")
-  public ResponseEntity<List<PromptRecord>> getAllPromptsByUserEmail(@PathVariable String email) {
+  public ResponseEntity<List<PromptRecord>> getAllPromptsByUserEmail(@RequestParam String email) {
     return ResponseEntity.ok(promptService.getAllPromptsByUserEmail(email)); 
   }
 
