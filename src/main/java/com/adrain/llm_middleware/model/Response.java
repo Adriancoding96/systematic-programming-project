@@ -45,7 +45,7 @@ public class Response {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   private Prompt prompt;
 
   @Column(columnDefinition = "TEXT")
@@ -55,7 +55,7 @@ public class Response {
 
   private ResponseRating rating;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne()
   @JoinColumn(name = "user_id")
   private User user;
 
