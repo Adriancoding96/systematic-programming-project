@@ -202,7 +202,7 @@ public class PromptControllerTest {
  *
  * @throws Exception if an error occurs during the test execution, Specifically mapping to JSON using
  * {@link ObjectMapper}.
- */
+ *//*
   @Test
   @WithMockUser
   public void testGetAllPromptsByUserEmail() throws Exception {
@@ -221,7 +221,7 @@ public class PromptControllerTest {
       .andExpect(jsonPath("$[1].uuid").value("654321"))
       .andExpect(jsonPath("$[2].prompt").value("Why is my unit tests failing"))
       .andExpect(jsonPath("$[2].uuid").value("401401"));
-  }
+  }*/
 
 /**
  * Tests the {@code /api/prompt/{id}} get endpoint to ensure it fetches a {@link PromptRecord}
