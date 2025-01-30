@@ -35,6 +35,7 @@ public interface PromptService {
   /**
    * Fetches all {@link Prompt}s as {@link PromptRecord} from database by {@link User} email.
    *
+   * @param email the email of the end user.
    * @return a list of {@link PromptRecord}s mapped from {@link Prompt} entities.
    */
   List<PromptRecord> getAllPromptsByUserEmail(String email);
@@ -46,6 +47,14 @@ public interface PromptService {
    */
   PromptRecord getPromptById(Long id);
 
+
+  /**
+   * Updates {@link Prompt} using id and {@link PromptRecord}.
+   *
+   * @param id the id of the existing {@link Prompt}
+   * @param record the dto containing the update data.
+   */
+  void updatePrompt(Long id, PromptRecord record);
 
   /**
    * Deletes {@link Prompt} from the database.
