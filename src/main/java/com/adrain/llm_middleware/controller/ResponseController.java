@@ -70,7 +70,7 @@ public class ResponseController {
    * @return a {@link ResponseEntity} containing a list of {@link ResponseRecord} objects
    */
   @GetMapping("/user")
-  public ResponseEntity<List<ResponseRecord>> getAllResponsesByUserId() {
+  public ResponseEntity<List<ResponseRecord>> getAllResponsesByUser() {
     List<ResponseRecord> responses = service.getAllResponsesByUserEmail();
     return ResponseEntity.ok(responses);
   }
