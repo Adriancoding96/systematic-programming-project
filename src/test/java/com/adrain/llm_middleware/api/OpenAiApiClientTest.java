@@ -2,6 +2,7 @@ package com.adrain.llm_middleware.api;
 
 import com.adrain.llm_middleware.mapper.PromptMapper;
 import com.adrain.llm_middleware.repository.PromptRepository;
+import com.adrain.llm_middleware.security.AuthenticationFacade;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
 import com.adrain.llm_middleware.service.impl.ResponseServiceImpl;
@@ -26,6 +27,7 @@ public class OpenAiApiClientTest {
   private UserServiceImpl userServiceImpl;
   private KeywordMatcher keywordMatcher;
   private ResponseServiceImpl responseServiceImpl;
+  private AuthenticationFacade authenticationFacade;
 
   @BeforeEach
   void setUp() {
@@ -35,8 +37,10 @@ public class OpenAiApiClientTest {
     userServiceImpl = Mockito.mock(UserServiceImpl.class);
     keywordMatcher = Mockito.mock(KeywordMatcher.class);
     responseServiceImpl = Mockito.mock(ResponseServiceImpl.class);
+    authenticationFacade = Mockito.mock(AuthenticationFacade.class);
 
-    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient, keywordSearcher, promptMapper, userServiceImpl, keywordMatcher, responseServiceImpl);
+
+    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient, keywordSearcher, promptMapper, userServiceImpl, keywordMatcher, responseServiceImpl, authenticationFacade);
   }
 
   /*
