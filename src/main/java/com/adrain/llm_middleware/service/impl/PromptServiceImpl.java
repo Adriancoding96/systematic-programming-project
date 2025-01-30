@@ -17,6 +17,7 @@ import com.adrain.llm_middleware.record.prompt.PromptRecord;
 import com.adrain.llm_middleware.record.prompt.PromptRequest;
 import com.adrain.llm_middleware.record.prompt.PromptResponse;
 import com.adrain.llm_middleware.repository.PromptRepository;
+import com.adrain.llm_middleware.security.AuthenticationFacade;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.ResponseService;
 import com.adrain.llm_middleware.service.UserService;
@@ -55,10 +56,12 @@ public class PromptServiceImpl implements PromptService {
   private final UserService userService;
   private final KeywordMatcher keywordMatcher;
   private final ResponseService responseService;
+  private final AuthenticationFacade authenticationFacade;
 
   @Autowired
   public PromptServiceImpl(PromptRepository promptRepository, OpenAiClient openAiClient, KeywordSearcher keywordSearcher,
-      PromptMapper promptMapper, UserService userService, KeywordMatcher keywordMatcher, ResponseService responseService) {
+      PromptMapper promptMapper, UserService userService, KeywordMatcher keywordMatcher, ResponseService responseService,
+      AuthenticationFacade authenticationFacade) {
     this.promptRepository = promptRepository;
     this.openAiClient = openAiClient;
     this.keywordSearcher = keywordSearcher;
@@ -66,6 +69,7 @@ public class PromptServiceImpl implements PromptService {
     this.userService = userService;
     this.keywordMatcher = keywordMatcher;
     this.responseService = responseService;
+    this.authenticationFacade = authenticationFacade;
     
   }
 
@@ -203,10 +207,43 @@ public class PromptServiceImpl implements PromptService {
    */
   public PromptRecord getPromptById(Long id) {
     Prompt prompt = promptRepository.findById(id)
-      .orElseThrow(() -> new PromptNotFoundException("Prompt cpuld not be found in database with id: " + id));
+      .orElseThrow(() -> new PromptNotFoundException("Prompt could not be found in database with id: " + id));
     return promptMapper.toRecordFromPrompt(prompt);
   }
 
+
+  /**
+   * Updates {@link Prompt} from the database by id and {@link PromptRecord}.
+   *
+   * @param id the id of the existing {@link Prompt} in the database.
+   * @param record the dto cotaining update data.
+   * @throws PromptNotFoundException if existing {@link Prompt} cant be found by id.
+   * @throws RuntimeException if existing {@link Prompt} belongs to another {@link User}.
+   */
+  @Override
+  public void updatePrompt(Long id, PromptRecord record) {
+    Prompt prompt = promptRepository.findById(id)
+      .orElseThrow(() -> new PromptNotFoundException("Prompt could not be found in database with id: " + id));
+    String authenticatedUserEmail = authenticationFacade.getAuthentication().getName();
+    if(!prompt.getUser().getEmail().equals(authenticatedUserEmail)) {
+      throw new RuntimeException("Prompt to be uppdated does not belong to authenticated user");
+    }
+    updatePromptAttributes(prompt, record);
+    promptRepository.save(prompt);
+
+  }
+
+
+  /**
+   * Sets existing {@link Prompt} attributes from {@link PromptRecord}
+   *
+   * @param prompt the existing {@link Prompt}.
+   * @param record the dto containing update data.
+   */
+  private void updatePromptAttributes(Prompt prompt, PromptRecord record) {
+    prompt.setPrompt(record.prompt());
+    prompt.setUuid(record.uuid());
+  }
 
   /**
    * Deletes {@link Response} from the database.
