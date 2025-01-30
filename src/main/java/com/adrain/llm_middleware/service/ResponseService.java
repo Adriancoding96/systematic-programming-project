@@ -62,6 +62,15 @@ public interface ResponseService {
    */
   Response getResponseByPromptId(Long id);
 
+
+  /**
+   * Updates a {@link Response} by id and {@link ResponseRecord}.
+   *
+   * @param id the id of the {@link Response}
+   * @param record the dto containing update data
+   */
+  void updateResponse(Long id, ResponseRecord record);
+
   /**
    * Deletes a {@link Response} by its unique identifier.
    *
