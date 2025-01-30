@@ -54,11 +54,11 @@ public class Prompt {
 
   private String prompt;
 
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne()
   @JoinColumn(name = "user_id")
   private User user;
  
-  @OneToOne(mappedBy = "prompt")
+  @OneToOne(mappedBy = "prompt", cascade = CascadeType.ALL, orphanRemoval = true)
   private Response response;
 
   @PrePersist
