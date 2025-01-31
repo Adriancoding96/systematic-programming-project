@@ -2,14 +2,30 @@ package com.adrain.llm_middleware.util;
 
 import java.util.List;
 
+import com.adrain.llm_middleware.api.OpenAiClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * KeywordSearcher is a singleton component responsible for identifying known keywords
+ * within a given text using the {@link AhoCorasickTrie} algorithm.
+ * <p>
+ *     This class maintains a predefined list of keywords and uses {@link AhoCorasickTrie}
+ *     for efficient keyword searching. The singleton instance can be retrieved
+ *     via {@link #getInstance()}.
+ * </p>
+ *
+ * @see AhoCorasickTrie
+ */
 @Component
 public class KeywordSearcher {
 
   private static KeywordSearcher instance;
 
+  /**
+   * Hard coded keywords API is searching for in responses from {@link OpenAiClient}.
+   * */
   private final List<String> KEYWORDS = List.of(
       "java",
       "rust",
@@ -151,6 +167,11 @@ public class KeywordSearcher {
     this.ahoCorasickTrie.insertAll(KEYWORDS);
   }
 
+  /**
+   * Returns the singleton instance of this {@link KeywordSearcher}.
+   *
+   * @return the singleton instance.
+   */
   public static KeywordSearcher getInstance() {
     if(instance == null) {
       instance = new KeywordSearcher();
@@ -158,6 +179,12 @@ public class KeywordSearcher {
     return instance;
   }
 
+  /**
+   * Extracts a list of known keywords from the given text using the {@link AhoCorasickTrie}.
+   *
+   * @param text the text in which to search for keywords.
+   * @return a list of matching keywords found within the text.
+   */
   public List<String> getKeywords(String text) {
     return this.ahoCorasickTrie.searchText(text);
   }

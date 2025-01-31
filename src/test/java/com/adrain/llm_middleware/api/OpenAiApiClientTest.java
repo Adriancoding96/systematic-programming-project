@@ -1,26 +1,46 @@
-package com.adrain.llm_middleware;
+package com.adrain.llm_middleware.api;
 
-import com.adrain.llm_middleware.api.OpenAiClient;
+import com.adrain.llm_middleware.mapper.PromptMapper;
 import com.adrain.llm_middleware.repository.PromptRepository;
+import com.adrain.llm_middleware.security.AuthenticationFacade;
 import com.adrain.llm_middleware.service.PromptService;
 import com.adrain.llm_middleware.service.impl.PromptServiceImpl;
+import com.adrain.llm_middleware.service.impl.ResponseServiceImpl;
+import com.adrain.llm_middleware.service.impl.UserServiceImpl;
+import com.adrain.llm_middleware.util.KeywordMatcher;
+import com.adrain.llm_middleware.util.KeywordSearcher;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class OpenAiApiClientTest {
 
   private PromptRepository promptRepository;
   private OpenAiClient openAiClient;
+  private KeywordSearcher keywordSearcher;
   private PromptService promptServiceImpl;
+  private PromptMapper promptMapper;
+  private UserServiceImpl userServiceImpl;
+  private KeywordMatcher keywordMatcher;
+  private ResponseServiceImpl responseServiceImpl;
+  private AuthenticationFacade authenticationFacade;
 
   @BeforeEach
   void setUp() {
     promptRepository = Mockito.mock(PromptRepository.class);
     openAiClient = Mockito.mock(OpenAiClient.class);
-    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient);
+    promptMapper = Mockito.mock(PromptMapper.class);
+    userServiceImpl = Mockito.mock(UserServiceImpl.class);
+    keywordMatcher = Mockito.mock(KeywordMatcher.class);
+    responseServiceImpl = Mockito.mock(ResponseServiceImpl.class);
+    authenticationFacade = Mockito.mock(AuthenticationFacade.class);
+
+
+    promptServiceImpl = new PromptServiceImpl(promptRepository, openAiClient, keywordSearcher, promptMapper, userServiceImpl, keywordMatcher, responseServiceImpl, authenticationFacade);
   }
 
   /*

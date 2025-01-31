@@ -9,6 +9,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service implementation for loading user details during authentication.
+ * This class implements the {@link UserDetailsService}.
+ *
+ * <p>It uses the {@link UserRepository} to fetch user details from the database and
+ * constructs a {@link UserDetails} object for Spring Security.</p>
+ *
+ * @see UserDetailsService
+ * @see UserRepository
+ * @see UserDetails
+ */
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
  
@@ -19,12 +30,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
     this.userRepository = userRepository;
   }
 
-  /*
-   * Method creates and returns spring.core.UserDetails.User from a model.User object
+  /**
+   * Sets {@link UserDetails} by the {@link User} email address.
+   * This method is used by Spring Security during the authentication process.
    *
-   * @param email: Contains user email
-   * @return UserDetails: Contains object constructed from user data
-   * */
+   * @param email the email address of the {@link User}
+   * @return the {@link UserDetails} object containing the {@link User} details
+   * @throws UserNotFoundException if no {@link User} is found with the provided email
+   */
   public UserDetails loadUserByUsername(String email) {
     User user = getUserByEmail(email);
     return org.springframework.security.core.userdetails.User.builder()
@@ -33,13 +46,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
       .build();
   }
 
-  /*
-   * Method fetches user from database by email
+
+  /**
+   * Fetches a {@link User} from the database by their email address.
    *
-   * @param email: Contains user email
-   * @return user: User object fetched from the database
-   * @throws UserNotFoundException: Throws exception if no user found by email
-   * */
+   * @param email the email address of the {@link User}
+   * @return the {@link User} associated with the given email
+   * @throws UserNotFoundException if no {@link User} is found with the given email
+   */
   private User getUserByEmail(String email) {
     return userRepository.findByEmail(email)
       .orElseThrow(() -> new UserNotFoundException("Could not find user with email: " + email));

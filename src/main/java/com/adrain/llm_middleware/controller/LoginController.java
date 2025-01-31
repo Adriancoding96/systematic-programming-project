@@ -1,5 +1,6 @@
 package com.adrain.llm_middleware.controller;
 
+import com.adrain.llm_middleware.model.User;
 import com.adrain.llm_middleware.record.auth.LoginRequest;
 import com.adrain.llm_middleware.record.auth.LoginResponse;
 import com.adrain.llm_middleware.security.JwtHelper;
@@ -12,6 +13,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller responsible for handling user login requests.
+ * This controller authenticates {@link User} based on their email and password,
+ * and generates a JSON web token upon successful authentication.
+ *
+ * @see RestController
+ * @see AuthenticationManager
+ * @see UsernamePasswordAuthenticationToken
+ */
 @RestController
 public class LoginController {
   
@@ -22,12 +32,14 @@ public class LoginController {
     this.authenticationManager = authenticationManager;
   }
 
-  /*
-   * Endpoint method for authenticating existing users
+  /**
+   * Handles user login requests.
+   * This method authenticates the user using the provided email and password,
+   * and generates a JWT token on successful authentication.
    *
-   * @param loginRequest: Record containing user credentials
-   * @return ResponseEntity<LoginResponse>: Response containing user email and generated jwt token
-   * */
+   * @param loginRequest the login request containing the {@link User} email and password
+   * @return a {@link ResponseEntity} containing the {@link LoginResponse} with the {@link User} email and JWT token
+   */
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
     authenticationManager.authenticate(

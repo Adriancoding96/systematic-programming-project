@@ -2,10 +2,14 @@ package com.adrain.llm_middleware.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 import com.adrain.llm_middleware.enums.ResponseRating;
@@ -16,6 +20,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents a response entity in the API.
+ * This class is mapped to a database table and contains details about a response,
+ * including its id, associated {@link Prompt}, response body, metadata, {@link ResponseRating},
+ * and {@link User}.
+ *
+ * <p>The class uses Lombok annotations to automatically generate 
+ * getters, setters, constructors, and {@code toString}.</p>
+ *
+ * @see Prompt
+ * @see ResponseRating
+ * @see User
+ */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,12 +45,18 @@ public class Response {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   private Prompt prompt;
 
+  @Column(columnDefinition = "TEXT")
   private String responseBody;
 
   private List<String> metaData;
 
   private ResponseRating rating;
+
+  @ManyToOne()
+  @JoinColumn(name = "user_id")
+  private User user;
+
 }
