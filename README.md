@@ -26,7 +26,7 @@ The **GrepAI** serves as an intermediary layer between users and Large Language 
 
 docker compose up --build
 
-**Run test locally**
+**Run tests outside of Docker container**
 
 docker-compose up -d db
 
